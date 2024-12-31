@@ -2,7 +2,7 @@ import { Environment, ApiConfig } from './types';
 
 export const API_CONFIG: Record<Environment, ApiConfig> = {
   development: {
-    baseUrl: 'http://localhost:3000/api',
+    baseUrl: 'https://localhost:5001/api',
     timeout: 10000,
     rateLimit: {
       maxRequests: 10,
@@ -15,7 +15,7 @@ export const API_CONFIG: Record<Environment, ApiConfig> = {
     },
   },
   production: {
-    baseUrl: 'http://localhost:3000/api',
+    baseUrl: 'https://localhost:5001/api',
     timeout: 5000,
     rateLimit: {
       maxRequests: 10,
