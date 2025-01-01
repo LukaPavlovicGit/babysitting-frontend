@@ -5,10 +5,11 @@ export const ENDPOINTS = {
       logout: '/account/logout',
       resetPassword: '/account/reset-password',
     },
-    profile: {
-      get: '/profile',
-      update: '/profile/update',
-      settings: '/profile/settings',
+    account: {
+      get: '/account',
+      getByEmail: (email: string) => `/account/${email}`,
+      update: '/account/update',
+      settings: '/account/settings',
     },
     bookings: {
       list: '/bookings',
