@@ -47,7 +47,11 @@ class Api {
       },
       account: {
         get: () => this.handleRequest(ENDPOINTS.account.get),
-        getByEmail: (email: string) => this.handleRequest(ENDPOINTS.account.getByEmail(email)),
+        getByEmail: (email: string) => 
+          this.handleRequest(ENDPOINTS.account.getByEmail(email), {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          }),
         update: () => this.handleRequest(ENDPOINTS.account.update),
         settings: () => this.handleRequest(ENDPOINTS.account.settings),
       },
