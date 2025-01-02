@@ -1,5 +1,3 @@
-'use client'
-
 import { useRouter } from 'next/navigation'; // Use next/navigation
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/config/api';
@@ -25,10 +23,10 @@ export const useGetAccountByEmail = () => {
       return data as GetAccountByEmailResponse;
     },
     onSuccess: (data) => {
-      console.log("data: " + data.firstName)
+      router.replace('/login');
     },
     onError: (error) => {
-      console.log("error: " + error)
+      router.replace('/signup');
     }
   });
 };
