@@ -45,10 +45,11 @@ class Api {
         logout: () => this.handleRequest(ENDPOINTS.auth.logout),
         resetPassword: () => this.handleRequest(ENDPOINTS.auth.resetPassword),
       },
-      profile: {
-        get: () => this.handleRequest(ENDPOINTS.profile.get),
-        update: () => this.handleRequest(ENDPOINTS.profile.update),
-        settings: () => this.handleRequest(ENDPOINTS.profile.settings),
+      account: {
+        get: () => this.handleRequest(ENDPOINTS.account.get),
+        getByEmail: (email: string) => this.handleRequest(ENDPOINTS.account.getByEmail(email)),
+        update: () => this.handleRequest(ENDPOINTS.account.update),
+        settings: () => this.handleRequest(ENDPOINTS.account.settings),
       },
       bookings: {
         list: () => this.handleRequest(ENDPOINTS.bookings.list),
