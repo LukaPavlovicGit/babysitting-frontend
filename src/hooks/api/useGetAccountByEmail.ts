@@ -15,7 +15,7 @@ interface GetAccountByEmailResponse {
     return useMutation({
       mutationFn: async (email: string) => {
         const res = await fetch(`${api.endpoints.account.getByEmail(email)}`, {
-          method: 'POST',
+          method: 'GET',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email })
         });
@@ -24,7 +24,7 @@ interface GetAccountByEmailResponse {
         return res.json() as Promise<GetAccountByEmailResponse>;
       },
       onSuccess: (data) => {
-        router.replace('/auth/login');
+        router.replace('/');
       },
       onError: (error) => {
         

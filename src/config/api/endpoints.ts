@@ -7,7 +7,7 @@ export const ENDPOINTS = {
     },
     account: {
       get: '/account',
-      getByEmail: (email: string) => `/account/${email}`,
+      getByEmail: (email: string) => `/account/get-account-by-email/${email}`,
       update: '/account/update',
       settings: '/account/settings',
     },
