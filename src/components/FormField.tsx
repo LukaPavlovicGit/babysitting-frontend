@@ -8,6 +8,7 @@ interface FormFieldProps {
   error?: any;
   valueAsNumber?: boolean;
   className?: string;
+  value?: string;
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -17,6 +18,7 @@ const FormField: React.FC<FormFieldProps> = ({
   register,
   error,
   valueAsNumber,
+  value,
   className
 }) => (
   <>
@@ -25,6 +27,7 @@ const FormField: React.FC<FormFieldProps> = ({
       placeholder={placeholder}
       {...register(name, { valueAsNumber })}
       className={`${className}`}
+      value={value}
     />
     {error && <span className="text-sm text-red-500">{error.message}</span>}
   </>
