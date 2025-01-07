@@ -12,7 +12,6 @@ function LoginOrSignupPage() {
     register,
     handleSubmit,
     formState: { errors },
-    setError
   } = useForm<LoginOrSignupData>({
     resolver: zodResolver(loginOrSignupSchema)
   });
