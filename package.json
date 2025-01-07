@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate-icons": "rimraf src/icons && svgr --no-dimensions --out-dir src/icons --src-dir src/components/icons --ext tsx --index-template src/icons/index.ts && prettier --write 'src/icons/**/*.tsx'"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

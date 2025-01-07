@@ -1,5 +1,5 @@
 import Link from "next/link";
-import {LeftArrowSvg} from "../../assets/svg/left-arrow";
+import {LeftArrowSvg} from "../../components/icons/LeftArrow";
 
 function LoginPage() {
   return (

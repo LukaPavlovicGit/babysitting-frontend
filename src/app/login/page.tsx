@@ -2,12 +2,12 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from "next/link";
-import { LeftArrowSvg } from "../../assets/svg/left-arrow";
 import { useForm } from 'react-hook-form';
 import { LoginData, loginSchema } from '@/schemas/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FormField from '@/components/FormField';
 import { useAccountLogin } from '@/hooks/api/useAccountLogin';
+import Icon from '@/components/Icon';
 
 function LoginPage() {
   const searchParams = useSearchParams();
@@ -34,7 +34,7 @@ function LoginPage() {
             <div className="relative flex flex-row items-center justify-between gap-3 w-full">
                 {/* I want to link this button to the login-or-signup page */}
                 <Link href="/login-or-signup" className="bg-white text-black p-2">
-                    <LeftArrowSvg/>
+                    <Icon name="LeftArrowSvg"/>
                 </Link>
                 <h2 className="absolute text-2xl font-bold left-1/2 -translate-x-1/2">Welcome, {firstName}</h2>
             </div>
