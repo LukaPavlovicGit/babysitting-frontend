@@ -39,13 +39,16 @@ class Api {
 
   get endpoints() {
     return {
-      auth: {
-        login: () => this.handleRequest(ENDPOINTS.auth.login),
-        register: () => this.handleRequest(ENDPOINTS.auth.register),
-        logout: () => this.handleRequest(ENDPOINTS.auth.logout),
-        resetPassword: () => this.handleRequest(ENDPOINTS.auth.resetPassword),
-      },
       account: {
+        login: (data: { email: string; password: string; rememberMe?: boolean }) => 
+          this.handleRequest(ENDPOINTS.account.login, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          }),
+        register: () => this.handleRequest(ENDPOINTS.account.register),
+        logout: () => this.handleRequest(ENDPOINTS.account.logout),
+        resetPassword: () => this.handleRequest(ENDPOINTS.account.resetPassword),
         get: () => this.handleRequest(ENDPOINTS.account.get),
         getByEmail: (email: string) => 
           this.handleRequest(ENDPOINTS.account.getByEmail(email), {

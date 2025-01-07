@@ -1,11 +1,9 @@
 export const ENDPOINTS = {
-    auth: {
+    account: {
       login: '/account/login',
       register: '/account/register',
       logout: '/account/logout',
       resetPassword: '/account/reset-password',
-    },
-    account: {
       get: '/account',
       getByEmail: (email: string) => `/account/get-account-by-email/${email}`,
       update: '/account/update',
