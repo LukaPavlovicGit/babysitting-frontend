@@ -1,7 +1,7 @@
 'use client';
 
 import FormField from "@/components/FormField";
-import { useGetAccountByEmail } from "@/hooks/api/useGetAccountByEmail";
+import { useGetAccountByEmail } from "@/hooks/useGetAccountByEmail";
 import { LoginOrSignupData, loginOrSignupSchema } from '@/schemas/loginOrSignupSchema';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
