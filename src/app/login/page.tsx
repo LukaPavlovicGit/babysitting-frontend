@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { LoginData, loginSchema } from '@/schemas/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FormField from '@/components/FormField';
-import { useAccountLogin } from '@/hooks/api/useAccountLogin';
+import { useAccountLogin } from '@/hooks/useAccountLogin';
 import Icon from '@/components/Icon';
 
 function LoginPage() {
@@ -32,7 +32,6 @@ function LoginPage() {
     <div className="flex flex-col items-center justify-center h-screen">
         <div className="flex flex-col items-center justify-center border-[1px] border-white p-4 w-full sm:w-1/2 sm:max-w-md gap-6">
             <div className="relative flex flex-row items-center justify-between gap-3 w-full">
-                {/* I want to link this button to the login-or-signup page */}
                 <Link href="/login-or-signup" className="bg-white text-black p-2">
                     <Icon name="LeftArrowSvg"/>
                 </Link>
