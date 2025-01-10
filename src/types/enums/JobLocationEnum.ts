@@ -1,0 +1,4 @@
+export enum JobLocationEnum {
+    AT_PARENT_HOME = 'AT_PARENT_HOME',
+    AT_BABYSITTER_HOME = 'AT_BABYSITTER_HOME',
+}
