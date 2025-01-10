@@ -46,7 +46,12 @@ class Api {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
           }),
-        register: () => this.handleRequest(ENDPOINTS.account.register),
+        register: (data: { email: string; password: string; firstName: string; lastName: string }) => 
+          this.handleRequest(ENDPOINTS.account.register, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          }),
         logout: () => this.handleRequest(ENDPOINTS.account.logout),
         resetPassword: () => this.handleRequest(ENDPOINTS.account.resetPassword),
         get: () => this.handleRequest(ENDPOINTS.account.get),
