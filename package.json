@@ -10,14 +10,20 @@
     "generate-icons": "rimraf src/icons && svgr --no-dimensions --out-dir src/icons --src-dir src/components/icons --ext tsx --index-template src/icons/index.ts && prettier --write 'src/icons/**/*.tsx'"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^3.9.1",
+    "@material-tailwind/react": "^2.1.10",
+    "@mui/material": "^6.3.1",
     "@next/env": "^15.1.3",
     "@reduxjs/toolkit": "^2.5.0",
     "@tanstack/react-query": "^5.62.11",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
     "clsx": "^2.1.1",
     "next": "15.1.2",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-hook-form": "^7.54.2",
     "react-icons": "^5.4.0",
     "react-redux": "^9.2.0",
@@ -26,13 +32,20 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/eslint__eslintrc": "^2.1.2",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "18.2.42",
+    "@types/react-dom": "^18.2.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.2",
+    "globals": "^15.14.0",
     "postcss": "^8",
+    "prettier": "^3.4.2",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   }
 }
