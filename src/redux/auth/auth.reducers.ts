@@ -32,7 +32,7 @@ export const authReducer = (
         ...state,
         isLoggedIn: false,
       }
-    case AUTH_TYPES.REGISTER_REQUEST:
+    case AUTH_TYPES.SIGNUP_REQUEST:
       return {
         ...state,
         isLoggedIn: false,
@@ -44,14 +44,14 @@ export const authReducer = (
         isAccountCompleted: action.payload.isAccountCompleted,
         isLoggedIn: true,
       }
-    case AUTH_TYPES.REGISTER_SUCCESS:
+    case AUTH_TYPES.SIGNUP_SUCCESS:
       return {
         ...state,
         isLoggedIn: false,
       }
     case AUTH_TYPES.LOGIN_OR_SIGNUP_FAILURE:
     case AUTH_TYPES.LOGIN_FAILURE:
-    case AUTH_TYPES.REGISTER_FAILURE:
+    case AUTH_TYPES.SIGNUP_FAILURE:
       return {
         ...state,
         isLoggedIn: false,
