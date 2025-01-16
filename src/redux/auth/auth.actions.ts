@@ -112,9 +112,11 @@ export const authActions = {
     return async (dispatch: Dispatch<AuthActionTypes>) => {
       try {
         dispatch(authActions.loginOrSignupRequest())
-        const response = await api.endpoints.account.getByEmail(
-          loginOrSignupData.email
-        )
+        const response =
+          await api.endpoints.account.getByEmail(loginOrSignupData)
+
+        if (!response.ok) throw new Error('Failed to check email')
+
         const data = (await response.json()) as LoginOrSignupResponse
         dispatch(authActions.loginOrSignupSuccess(data))
         return data
@@ -132,6 +134,9 @@ export const authActions = {
       try {
         dispatch(authActions.loginRequest())
         const response = await api.endpoints.account.login(loginData)
+
+        if (!response.ok) throw new Error('Failed to login')
+
         const data = (await response.json()) as LoginResponse
         dispatch(authActions.loginSuccess(data))
         return data
@@ -148,13 +153,16 @@ export const authActions = {
     return async (dispatch: Dispatch<AuthActionTypes>) => {
       try {
         dispatch(authActions.signupRequest())
-        const response = await api.endpoints.account.register(signupData)
+        const response = await api.endpoints.account.signup(signupData)
+
+        if (!response.ok) throw new Error('Failed to signup')
+
         const data = (await response.json()) as SignupResponse
         dispatch(authActions.signupSuccess(data))
         return data
       } catch (error) {
         const errorMessage =
-          error instanceof Error ? error.message : 'Signup failed'
+          error instanceof Error ? error.message : 'Registration failed'
         dispatch(authActions.signupFailure(errorMessage))
         throw error
       }
