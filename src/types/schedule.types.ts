@@ -1,0 +1,30 @@
+export type Schedule = {
+    mondayMorning: boolean;
+    mondayAfternoon: boolean;
+    mondayEvening: boolean;
+    mondayNight: boolean;
+    tuesdayMorning: boolean;
+    tuesdayAfternoon: boolean;
+    tuesdayEvening: boolean;
+    tuesdayNight: boolean;
+    wednesdayMorning: boolean;
+    wednesdayAfternoon: boolean;
+    wednesdayEvening: boolean;
+    wednesdayNight: boolean;
+    thursdayMorning: boolean;
+    thursdayAfternoon: boolean;
+    thursdayEvening: boolean;
+    thursdayNight: boolean;
+    fridayMorning: boolean;
+    fridayAfternoon: boolean;
+    fridayEvening: boolean;
+    fridayNight: boolean;
+    saturdayMorning: boolean;
+    saturdayAfternoon: boolean;
+    saturdayEvening: boolean;
+    saturdayNight: boolean;
+    sundayMorning: boolean;
+    sundayAfternoon: boolean;
+    sundayEvening: boolean;
+    sundayNight: boolean;
+}

@@ -1,7 +1,6 @@
-enum SkillsEnum
-{
-    PETS = 'PETS',
-    COOKING = 'COOKING',
-    CHORES = 'CHORES',
-    HOMEWORK_ASSISTANCE = 'HOMEWORK_ASSISTANCE'
+export enum SkillsEnum {
+  PETS = 'PETS',
+  COOKING = 'COOKING',
+  CHORES = 'CHORES',
+  HOMEWORK_ASSISTANCE = 'HOMEWORK_ASSISTANCE',
 }

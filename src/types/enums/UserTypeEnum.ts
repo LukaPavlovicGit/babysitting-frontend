@@ -1,4 +1,4 @@
 export enum UserTypeEnum {
-    PARENT = 'PARENT',
-    BABYSITTER = 'BABYSITTER'
+  PARENT = 'PARENT',
+  BABYSITTER = 'BABYSITTER',
 }
