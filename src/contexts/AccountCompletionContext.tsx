@@ -1,15 +1,7 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { z } from 'zod'
-import {
-  accountCompletionSchema,
-  AccountCompletionData,
-} from '@/schemas/accountCompletionSchema'
+import { accountCompletionSchema, AccountCompletionData } from '@/schemas/accountCompletionSchema'
+import { UserTypeEnum } from '@/types/enums/UserTypeEnum'
 
 interface AccountCompletionContextType {
   currentStep: number
@@ -17,20 +9,18 @@ interface AccountCompletionContextType {
   updateFormData: (data: Partial<AccountCompletionData>) => void
   nextStep: () => void
   prevStep: () => void
+  isParent: () => boolean
+  isBabysitter: () => boolean
   canProceed: boolean
   errors: z.ZodError | null
 }
 
-const AccountCompletionContext = createContext<
-  AccountCompletionContextType | undefined
->(undefined)
+const AccountCompletionContext = createContext<AccountCompletionContextType | undefined>(undefined)
 
 export const useAccountCompletion = () => {
   const context = useContext(AccountCompletionContext)
   if (!context) {
-    throw new Error(
-      'useAccountCompletion must be used within AccountCompletionProvider'
-    )
+    throw new Error('useAccountCompletion must be used within AccountCompletionProvider')
   }
   return context
 }
@@ -63,11 +53,7 @@ const stepValidationSchemas = [
   }),
 ]
 
-export function AccountCompletionProvider({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export function AccountCompletionProvider({ children }: { children: React.ReactNode }) {
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState<Partial<AccountCompletionData>>({})
   const [errors, setErrors] = useState<z.ZodError | null>(null)
@@ -79,6 +65,7 @@ export function AccountCompletionProvider({
       setErrors(null)
       return true
     } catch (error) {
+      console.log(error)
       if (error instanceof z.ZodError) {
         setErrors(error)
       }
@@ -91,10 +78,7 @@ export function AccountCompletionProvider({
   }
 
   const nextStep = () => {
-    if (
-      validateCurrentStep() &&
-      currentStep < stepValidationSchemas.length - 1
-    ) {
+    if (validateCurrentStep() && currentStep < stepValidationSchemas.length - 1) {
       setCurrentStep((prev) => prev + 1)
     }
   }
@@ -104,6 +88,10 @@ export function AccountCompletionProvider({
       setCurrentStep((prev) => prev - 1)
     }
   }
+
+  const isParent = () => formData.userType === UserTypeEnum.PARENT
+
+  const isBabysitter = () => formData.userType === UserTypeEnum.BABYSITTER
 
   useEffect(() => {
     const isValid = validateCurrentStep()
@@ -116,13 +104,11 @@ export function AccountCompletionProvider({
     updateFormData,
     nextStep,
     prevStep,
+    isParent,
+    isBabysitter,
     canProceed,
     errors,
   }
 
-  return (
-    <AccountCompletionContext.Provider value={value}>
-      {children}
-    </AccountCompletionContext.Provider>
-  )
+  return <AccountCompletionContext.Provider value={value}>{children}</AccountCompletionContext.Provider>
 }

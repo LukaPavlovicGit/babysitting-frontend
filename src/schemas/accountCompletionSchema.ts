@@ -2,14 +2,15 @@ import { AgeCategoryEnum } from '@/types/enums/AgeCategoryEnum'
 import { CharacteristicsEnum } from '@/types/enums/CharacteristicsEnum'
 import { CurrencyEnum } from '@/types/enums/CurrencyEnum'
 import { JobLocationEnum } from '@/types/enums/JobLocationEnum'
+import { LanguagesEnum } from '@/types/enums/LanguagesEnum'
 import { SkillsEnum } from '@/types/enums/SkillsEnum'
 import { UserTypeEnum } from '@/types/enums/UserTypeEnum'
 import { z } from 'zod'
 
 export const accountCompletionSchema = z.object({
-  userType: z
-    .array(z.nativeEnum(UserTypeEnum))
-    .length(1, { message: 'User type must be picked' }),
+  userType: z.nativeEnum(UserTypeEnum, {
+    errorMap: () => ({ message: 'User type must be PARENT or BABYSITTER' }),
+  }),
   postalCode: z.number().min(1, { message: 'Postal code must be a number' }),
   firstName: z.string().min(1, { message: 'First name must be picked' }),
   addressName: z.string().min(1, { message: 'Address name must be picked' }),
@@ -26,7 +27,7 @@ export const accountCompletionSchema = z.object({
     .max(90)
     .refine((value) => !isNaN(value), { message: 'Latitude must be a number' }),
   familySpeakingLanguages: z
-    .array(z.number())
+    .array(z.nativeEnum(LanguagesEnum))
     .length(1, {
       message: 'At least one family speaking language must be picked',
     })

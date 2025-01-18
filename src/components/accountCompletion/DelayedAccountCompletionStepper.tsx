@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useSelector } from 'react-redux'
-import { RootState } from '@/redux/store/store'
+import { RootReducerState } from '@/redux/store/store'
 import { AccountCompletionProvider } from '@/contexts/AccountCompletionContext'
 import { createPortal } from 'react-dom'
 import AccountCompletionStepper from './AccountCompletionStepper'
@@ -12,10 +12,8 @@ export default function DelayedAccountCompletionStepper() {
   const pathname = usePathname()
   const [show, setShow] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn)
-  const isAccountCompleted = useSelector(
-    (state: RootState) => state.auth.isAccountCompleted
-  )
+  const isLoggedIn = useSelector((state: RootReducerState) => state.auth.isLoggedIn)
+  const isAccountCompleted = useSelector((state: RootReducerState) => state.auth.isAccountCompleted)
 
   useEffect(() => {
     setMounted(true)
@@ -27,8 +25,7 @@ export default function DelayedAccountCompletionStepper() {
     console.log('isLoggedIn: ' + isLoggedIn)
     console.log('isAccountComplete: ' + isAccountCompleted)
 
-    const doNotShow =
-      !isLoggedIn || isAccountCompleted || /^\/*(login|signup)/.test(pathname)
+    const doNotShow = !isLoggedIn || isAccountCompleted || /^\/*(login|signup)/.test(pathname)
 
     console.log('doNotShow: ' + doNotShow)
 
@@ -77,10 +74,7 @@ export default function DelayedAccountCompletionStepper() {
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
-        <button
-          onClick={handleDismiss}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-        >
+        <button onClick={handleDismiss} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
           ✕
         </button>
         <AccountCompletionProvider>
