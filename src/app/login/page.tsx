@@ -1,7 +1,7 @@
 'use client'
 
 import { useDispatch } from 'react-redux'
-import { AppDispatch, store, RootState } from '@/redux/store/store'
+import { AppDispatch, store, RootReducerState } from '@/redux/store/store'
 import { authSelectors } from '@/redux/auth/auth.selectors'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -15,8 +15,8 @@ import Icon from '@/components/Icon'
 function LoginPage() {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
-  const email = authSelectors.getEmail(store.getState() as RootState)
-  const firstName = authSelectors.getFirstName(store.getState() as RootState)
+  const email = authSelectors.getEmail(store.getState() as RootReducerState)
+  const firstName = authSelectors.getFirstName(store.getState() as RootReducerState)
 
   const {
     register,
@@ -42,14 +42,9 @@ function LoginPage() {
           <Link href="/login-or-signup" className="bg-white text-black p-2">
             <Icon name="LeftArrowSvg" />
           </Link>
-          <h2 className="absolute text-2xl font-bold left-1/2 -translate-x-1/2">
-            Welcome, {firstName}
-          </h2>
+          <h2 className="absolute text-2xl font-bold left-1/2 -translate-x-1/2">Welcome, {firstName}</h2>
         </div>
-        <form
-          onSubmit={onSubmit}
-          className="flex flex-col items-center justify-center gap-3 w-full"
-        >
+        <form onSubmit={onSubmit} className="flex flex-col items-center justify-center gap-3 w-full">
           <FormField
             type="text"
             placeholder="Email"
@@ -67,14 +62,9 @@ function LoginPage() {
             error={errors.password}
             className="w-full px-2 py-1 text-black "
           />
-          <button className="bg-green-500 text-black px-2 py-1 w-full">
-            Login
-          </button>
+          <button className="bg-green-500 text-black px-2 py-1 w-full">Login</button>
         </form>
-        <Link
-          href="/forgot-password"
-          className="text-white text-left w-full underline"
-        >
+        <Link href="/forgot-password" className="text-white text-left w-full underline">
           Forgot password?
         </Link>
         <div className="flex items-center justify-center w-full gap-3">
