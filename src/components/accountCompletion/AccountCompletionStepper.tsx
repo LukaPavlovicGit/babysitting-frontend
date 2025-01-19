@@ -75,17 +75,17 @@ export default function AccountCompletionStepper() {
       {isParent() && currentStep === 1 && <FamilyInformationStep />}
       {isParent() && currentStep === 2 && <WhatDoYouNeedFromBabysitterStep />}
 
-      <div className="flex justify-between pt-4">
-        <Button onClick={prevStep} disabled={currentStep === 0}>
+      <div className="flex w-full justify-between pt-4">
+        <Button onClick={prevStep} disabled={currentStep === 0} variant="contained" color="info">
           Back
         </Button>
 
         {currentStep < steps.length - 1 ? (
-          <Button onClick={nextStep} disabled={!canProceed} variant="contained">
+          <Button onClick={nextStep} disabled={!canProceed} variant="contained" color="info">
             Next
           </Button>
         ) : (
-          <Button onClick={onSubmit} disabled={!canProceed} variant="contained" color="primary">
+          <Button onClick={onSubmit} disabled={!canProceed} variant="contained" color="success">
             Complete
           </Button>
         )}
@@ -129,8 +129,8 @@ function FamilyInformationStep() {
   const { updateFormData, formData } = useAccountCompletion()
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-16 justify-center items-center">
+    <div className="flex flex-col">
+      <div className="flex flex-col gap-24">
         <div className="flex flex-col space-y-4 max-w-md">
           <div className="grid grid-cols-[140px_1fr] items-center gap-4">
             <span className="text-white font-semibold">First name</span>
