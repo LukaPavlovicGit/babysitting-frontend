@@ -28,7 +28,6 @@ export const useAccountCompletion = () => {
 const stepValidationSchemas = [
   // Step 1: User Type
   accountCompletionSchema.pick({ userType: true }),
-
   // Step 2: Family Information
   accountCompletionSchema.pick({
     firstName: true,
@@ -42,7 +41,6 @@ const stepValidationSchemas = [
     childrenCharacteristics: true,
     familyDescription: true,
   }),
-
   // Step 3: Schedule/Needs
   accountCompletionSchema.pick({
     currency: true,
@@ -63,18 +61,21 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
     try {
       stepValidationSchemas[currentStep].parse(formData)
       setErrors(null)
+      setCanProceed(true)
       return true
     } catch (error) {
       console.log(error)
       if (error instanceof z.ZodError) {
         setErrors(error)
       }
+      setCanProceed(false)
       return false
     }
   }, [currentStep, formData])
 
   const updateFormData = (data: Partial<AccountCompletionData>) => {
     setFormData((prev) => ({ ...prev, ...data }))
+    validateCurrentStep()
   }
 
   const nextStep = () => {
@@ -86,7 +87,12 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
   const prevStep = () => {
     if (currentStep > 0) {
       setCurrentStep((prev) => prev - 1)
+      invalidateCurrentStep()
     }
+  }
+
+  const invalidateCurrentStep = () => {
+    stepValidationSchemas[currentStep].parse({})
   }
 
   const isParent = () => formData.userType === UserTypeEnum.PARENT
@@ -94,8 +100,7 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
   const isBabysitter = () => formData.userType === UserTypeEnum.BABYSITTER
 
   useEffect(() => {
-    const isValid = validateCurrentStep()
-    setCanProceed(isValid)
+    validateCurrentStep()
   }, [validateCurrentStep])
 
   const value = {

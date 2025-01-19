@@ -28,29 +28,21 @@ export const accountCompletionSchema = z.object({
     .refine((value) => !isNaN(value), { message: 'Latitude must be a number' }),
   familySpeakingLanguages: z
     .array(z.nativeEnum(LanguagesEnum))
-    .length(1, {
-      message: 'At least one family speaking language must be picked',
-    })
+    .min(1, { message: 'At least one family speaking language must be picked' })
     .max(3, { message: 'At most 3 family speaking languages can be picked' }),
-  numberOfChildren: z
-    .number()
-    .min(1, { message: 'At least one child must be picked' }),
+  numberOfChildren: z.number().min(1, { message: 'At least one child must be picked' }),
   childrenAgeCategories: z
     .array(z.nativeEnum(AgeCategoryEnum))
-    .length(1, { message: 'At least one child age category must be picked' }),
+    .min(1, { message: 'At least one age category must be picked' }),
   childrenCharacteristics: z
     .array(z.nativeEnum(CharacteristicsEnum))
-    .length(1, { message: 'At least one child characteristic must be picked' })
-    .max(4, { message: 'At most 3 child characteristics can be picked' }),
-  familyDescription: z.string().optional(),
+    .min(1, { message: 'At least one child characteristic must be picked' })
+    .max(4, { message: 'At most 4 child characteristics can be picked' }),
+  familyDescription: z.string().min(20, { message: 'Family description must be picked' }),
   preferebleSkills: z.array(z.nativeEnum(SkillsEnum)).optional(),
-  currency: z
-    .array(z.nativeEnum(CurrencyEnum))
-    .length(1, { message: 'One currency must be picked' }),
+  currency: z.nativeEnum(CurrencyEnum, { message: 'Currency must be picked' }),
   rate: z.number().min(0, { message: 'Rate must be a positive number' }),
-  jobLocation: z
-    .array(z.nativeEnum(JobLocationEnum))
-    .length(1, { message: 'One job location must be picked' }),
+  jobLocation: z.nativeEnum(JobLocationEnum, { message: 'Job location must be picked' }),
   schedule: z.object({
     mondayMorning: z.boolean().default(false),
     mondayAfternoon: z.boolean().default(false),
