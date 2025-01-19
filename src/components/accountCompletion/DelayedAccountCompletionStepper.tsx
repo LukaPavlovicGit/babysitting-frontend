@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useSelector } from 'react-redux'
-import { RootReducerState } from '@/redux/store/store'
+import { RootState } from '@/redux/store/store'
 import { AccountCompletionProvider } from '@/contexts/AccountCompletionContext'
 import { createPortal } from 'react-dom'
 import AccountCompletionStepper from './AccountCompletionStepper'
@@ -12,8 +12,8 @@ export default function DelayedAccountCompletionStepper() {
   const pathname = usePathname()
   const [show, setShow] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const isLoggedIn = useSelector((state: RootReducerState) => state.auth.isLoggedIn)
-  const isAccountCompleted = useSelector((state: RootReducerState) => state.auth.isAccountCompleted)
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn)
+  const isAccountCompleted = useSelector((state: RootState) => state.auth.isAccountCompleted)
 
   useEffect(() => {
     setMounted(true)
@@ -72,10 +72,10 @@ export default function DelayedAccountCompletionStepper() {
   if (!mounted || !show) return null
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
-        <button onClick={handleDismiss} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
-          ✕
+    <div className="flex items-top justify-center fixed inset-0 z-50 bg-black bg-opacity-50 p-10 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex flex-col items-end gap-2">
+        <button onClick={handleDismiss} className="text-gray-500 hover:text-gray-700">
+          <span>SKIP</span>
         </button>
         <AccountCompletionProvider>
           <AccountCompletionStepper />

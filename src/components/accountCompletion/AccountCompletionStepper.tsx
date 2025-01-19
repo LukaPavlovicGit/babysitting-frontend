@@ -37,7 +37,7 @@ export default function AccountCompletionStepper() {
   })
 
   return (
-    <Box className="flex flex-col flex-grow gap-8 w-2/3 min-h-2/3 px-8 py-4 fixed z-50 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-[#4B545C] rounded-lg">
+    <Box className="flex flex-col flex-grow w-full gap-12 justify-center items-center bg-[#4B545C] rounded-lg p-5">
       <Stepper activeStep={currentStep} alternativeLabel>
         {steps.map((label, index) => {
           const stepProps: { completed?: boolean } = {}
@@ -98,7 +98,7 @@ function UserTypeStep() {
   const { updateFormData } = useAccountCompletion()
 
   return (
-    <div className="w-full h-full flex flex-col gap-8 justify-start items-center">
+    <div className="size-full flex flex-col gap-8 justify-start items-center">
       <div className="text-white text-6xl font-medium">Who am I?</div>
       <RadioGroup name="userType">
         {Object.values(UserTypeEnum).map((userType) => (
@@ -129,116 +129,137 @@ function FamilyInformationStep() {
   const { updateFormData, formData } = useAccountCompletion()
 
   return (
-    <div className="w-full h-full flex flex-col gap-4 justify-center items-center">
-      <div className="text-white text-2xl">Tell us more about your family</div>
-      <div className="flex gap-4 w-full">
-        <div className="flex flex-col gap-4 w-fit">
-          <TextField label="First name" />
-          <div className="w-full flex flex-col gap-1">
-            <TextField label="Postal code" />
-            <TextField label="Address name" />
-            <TextField label="Address latitude" />
-            <TextField label="Address longitude" />
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-16 justify-center items-center">
+        <div className="flex flex-col space-y-4 max-w-md">
+          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
+            <span className="text-white font-semibold">First name</span>
+            <TextField />
+          </div>
+
+          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
+            <span className="text-white font-semibold">Postal code</span>
+            <TextField />
+          </div>
+
+          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
+            <span className="text-white font-semibold">Address name</span>
+            <TextField />
+          </div>
+
+          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
+            <span className="text-white font-semibold">Address latitude</span>
+            <TextField />
+          </div>
+
+          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
+            <span className="text-white font-semibold">Address longitude</span>
+            <TextField />
           </div>
         </div>
-        <div className="flex flex-col gap-1 w-fit">
-          <span className="text-white font-semibold">
-            Family speaking
-            <br /> languages:
-          </span>
-          <RadioGroup name="familySpeakingLanguages">
-            {Object.values(LanguagesEnum).map((language) => (
-              <FormControlLabel
-                key={language}
-                value={language}
-                control={
-                  <Checkbox
-                    icon={<CheckBoxOutlineBlankIcon />}
-                    checkedIcon={<CheckBoxIcon />}
-                    checked={formData.familySpeakingLanguages?.includes(language) || false}
-                    onChange={(e) => {
-                      const currentLanguages = formData.familySpeakingLanguages || []
-                      const value = e.target.value as LanguagesEnum
+        <div className="flex flex-col gap-16 justify-start">
+          <div className="grid grid-cols-[140px_1fr] items-start gap-4">
+            <span className="text-white font-semibold pt-1">Family speaking languages:</span>
+            <div>
+              <RadioGroup name="familySpeakingLanguages">
+                <div className="grid grid-cols-3">
+                  {Object.values(LanguagesEnum).map((language) => (
+                    <FormControlLabel
+                      key={language}
+                      value={language}
+                      control={
+                        <Checkbox
+                          icon={<CheckBoxOutlineBlankIcon />}
+                          checkedIcon={<CheckBoxIcon />}
+                          checked={formData.familySpeakingLanguages?.includes(language) || false}
+                          onChange={(e) => {
+                            const currentLanguages = formData.familySpeakingLanguages || []
+                            const value = e.target.value as LanguagesEnum
 
-                      updateFormData({
-                        familySpeakingLanguages: currentLanguages.includes(value)
-                          ? currentLanguages.filter((lang) => lang !== value)
-                          : [...currentLanguages, value],
-                      })
-                    }}
-                  />
-                }
-                label={language}
-                className="text-white"
-              />
-            ))}
-          </RadioGroup>
-        </div>
-        <div className="flex flex-col gap-1 w-fit">
-          <span className="text-white font-semibold">
-            Choose children
-            <br /> age categories:
-          </span>
-          <RadioGroup name="childrenAgeCategories">
-            {Object.values(AgeCategoryEnum).map((ageCategory) => (
-              <FormControlLabel
-                key={ageCategory}
-                value={ageCategory}
-                control={
-                  <Checkbox
-                    icon={<CheckBoxOutlineBlankIcon />}
-                    checkedIcon={<CheckBoxIcon />}
-                    checked={formData.childrenAgeCategories?.includes(ageCategory) || false}
-                    onChange={(e) => {
-                      const currentAgeCategories = formData.childrenAgeCategories || []
-                      const value = e.target.value as AgeCategoryEnum
+                            updateFormData({
+                              familySpeakingLanguages: currentLanguages.includes(value)
+                                ? currentLanguages.filter((lang) => lang !== value)
+                                : [...currentLanguages, value],
+                            })
+                          }}
+                        />
+                      }
+                      label={language}
+                      className="text-white"
+                    />
+                  ))}
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+          <div className="grid grid-cols-[140px_1fr] items-start gap-4">
+            <span className="text-white font-semibold pt-1">Choose children age categories:</span>
+            <div>
+              <RadioGroup name="childrenAgeCategories">
+                <div className="grid grid-cols-3">
+                  {Object.values(AgeCategoryEnum).map((ageCategory) => (
+                    <FormControlLabel
+                      key={ageCategory}
+                      value={ageCategory}
+                      control={
+                        <Checkbox
+                          icon={<CheckBoxOutlineBlankIcon />}
+                          checkedIcon={<CheckBoxIcon />}
+                          checked={formData.childrenAgeCategories?.includes(ageCategory) || false}
+                          onChange={(e) => {
+                            const currentAgeCategories = formData.childrenAgeCategories || []
+                            const value = e.target.value as AgeCategoryEnum
 
-                      updateFormData({
-                        childrenAgeCategories: currentAgeCategories.includes(value)
-                          ? currentAgeCategories.filter((age) => age !== value)
-                          : [...currentAgeCategories, value],
-                      })
-                    }}
-                  />
-                }
-                label={ageCategory}
-                className="text-white"
-              />
-            ))}
-          </RadioGroup>
-        </div>
-        <div className="flex flex-col gap-1 w-fit">
-          <span className="text-white font-semibold">
-            Choose children
-            <br /> age categories:
-          </span>
-          <RadioGroup name="childrenCharacteristics">
-            {Object.values(CharacteristicsEnum).map((characteristic) => (
-              <FormControlLabel
-                key={characteristic}
-                value={characteristic}
-                control={
-                  <Checkbox
-                    icon={<CheckBoxOutlineBlankIcon />}
-                    checkedIcon={<CheckBoxIcon />}
-                    checked={formData.childrenCharacteristics?.includes(characteristic) || false}
-                    onChange={(e) => {
-                      const currentCharacteristics = formData.childrenCharacteristics || []
-                      const value = e.target.value as CharacteristicsEnum
+                            updateFormData({
+                              childrenAgeCategories: currentAgeCategories.includes(value)
+                                ? currentAgeCategories.filter((age) => age !== value)
+                                : [...currentAgeCategories, value],
+                            })
+                          }}
+                        />
+                      }
+                      label={ageCategory}
+                      className="text-white"
+                    />
+                  ))}
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+          <div className="grid grid-cols-[140px_1fr] items-start gap-4">
+            <span className="text-white font-semibold pt-1">Choose children characteristics:</span>
+            <div>
+              <RadioGroup name="familySpeakingLanguages">
+                <div className="grid grid-cols-3">
+                  {Object.values(CharacteristicsEnum).map((characteristic) => (
+                    <FormControlLabel
+                      key={characteristic}
+                      value={characteristic}
+                      control={
+                        <Checkbox
+                          icon={<CheckBoxOutlineBlankIcon />}
+                          checkedIcon={<CheckBoxIcon />}
+                          checked={formData.childrenCharacteristics?.includes(characteristic) || false}
+                          onChange={(e) => {
+                            const currentCharacteristics = formData.childrenCharacteristics || []
+                            const value = e.target.value as CharacteristicsEnum
 
-                      updateFormData({
-                        childrenCharacteristics: currentCharacteristics.includes(value)
-                          ? currentCharacteristics.filter((char) => char !== value)
-                          : [...currentCharacteristics, value],
-                      })
-                    }}
-                  />
-                }
-                label={characteristic}
-                className="text-white"
-              />
-            ))}
-          </RadioGroup>
+                            updateFormData({
+                              childrenCharacteristics: currentCharacteristics.includes(value)
+                                ? currentCharacteristics.filter((char) => char !== value)
+                                : [...currentCharacteristics, value],
+                            })
+                          }}
+                        />
+                      }
+                      label={characteristic}
+                      className="text-white"
+                    />
+                  ))}
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -247,7 +268,7 @@ function FamilyInformationStep() {
 
 function WhatDoYouNeedFromBabysitterStep() {
   return (
-    <div className="w-full h-full flex flex-col gap-12 justify-center items-center">
+    <div className="w-full h-full flex flex-col gap-12 justify-start items-center">
       <div className="text-white text-6xl font-medium">What do you need from babysitter?</div>
     </div>
   )
