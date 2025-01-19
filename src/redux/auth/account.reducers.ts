@@ -1,6 +1,6 @@
-import { AuthState } from './auth.types'
-import { AuthActionTypes } from './auth.actions'
-import { AUTH_TYPES } from './auth.types'
+import { AuthState } from './account.types'
+import { AccountActionTypes } from './account.actions'
+import { ACCOUNT_TYPES } from './account.types'
 
 const initialState: AuthState = {
   token: null,
@@ -10,48 +10,45 @@ const initialState: AuthState = {
   isLoggedIn: false,
 }
 
-export const authReducer = (
-  state: AuthState = initialState,
-  action: AuthActionTypes
-): AuthState => {
+export const accountReducer = (state: AuthState = initialState, action: AccountActionTypes): AuthState => {
   switch (action.type) {
-    case AUTH_TYPES.LOGIN_OR_SIGNUP_REQUEST:
+    case ACCOUNT_TYPES.LOGIN_OR_SIGNUP_REQUEST:
       return {
         ...state,
         isLoggedIn: false,
       }
-    case AUTH_TYPES.LOGIN_OR_SIGNUP_SUCCESS:
+    case ACCOUNT_TYPES.LOGIN_OR_SIGNUP_SUCCESS:
       return {
         ...state,
         firstName: action.payload.firstName,
         email: action.payload.email,
       }
 
-    case AUTH_TYPES.LOGIN_REQUEST:
+    case ACCOUNT_TYPES.LOGIN_REQUEST:
       return {
         ...state,
         isLoggedIn: false,
       }
-    case AUTH_TYPES.SIGNUP_REQUEST:
+    case ACCOUNT_TYPES.SIGNUP_REQUEST:
       return {
         ...state,
         isLoggedIn: false,
       }
-    case AUTH_TYPES.LOGIN_SUCCESS:
+    case ACCOUNT_TYPES.LOGIN_SUCCESS:
       return {
         ...state,
         token: action.payload.token,
         isAccountCompleted: action.payload.isAccountCompleted,
         isLoggedIn: true,
       }
-    case AUTH_TYPES.SIGNUP_SUCCESS:
+    case ACCOUNT_TYPES.SIGNUP_SUCCESS:
       return {
         ...state,
         isLoggedIn: false,
       }
-    case AUTH_TYPES.LOGIN_OR_SIGNUP_FAILURE:
-    case AUTH_TYPES.LOGIN_FAILURE:
-    case AUTH_TYPES.SIGNUP_FAILURE:
+    case ACCOUNT_TYPES.LOGIN_OR_SIGNUP_FAILURE:
+    case ACCOUNT_TYPES.LOGIN_FAILURE:
+    case ACCOUNT_TYPES.SIGNUP_FAILURE:
       return {
         ...state,
         isLoggedIn: false,

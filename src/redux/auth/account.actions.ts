@@ -1,58 +1,52 @@
 import { Dispatch } from 'redux'
-import { useRouter } from 'next/navigation'
-import {
-  AUTH_TYPES,
-  LoginOrSignupResponse,
-  LoginResponse,
-  SignupResponse,
-} from './auth.types'
+import { ACCOUNT_TYPES, LoginOrSignupResponse, LoginResponse, SignupResponse } from './account.types'
 import { LoginData, SignupData } from '@/schemas/auth'
 import { api } from '@/endpoints'
 import { LoginOrSignupData } from '@/schemas/auth/loginOrSignupSchema'
 
 interface LoginOrSignupRequestAction {
-  type: typeof AUTH_TYPES.LOGIN_OR_SIGNUP_REQUEST
+  type: typeof ACCOUNT_TYPES.LOGIN_OR_SIGNUP_REQUEST
 }
 
 interface LoginOrSignupSuccessAction {
-  type: typeof AUTH_TYPES.LOGIN_OR_SIGNUP_SUCCESS
+  type: typeof ACCOUNT_TYPES.LOGIN_OR_SIGNUP_SUCCESS
   payload: LoginOrSignupResponse
 }
 
 interface LoginOrSignupFailureAction {
-  type: typeof AUTH_TYPES.LOGIN_OR_SIGNUP_FAILURE
+  type: typeof ACCOUNT_TYPES.LOGIN_OR_SIGNUP_FAILURE
   payload: string
 }
 
 interface LoginRequestAction {
-  type: typeof AUTH_TYPES.LOGIN_REQUEST
+  type: typeof ACCOUNT_TYPES.LOGIN_REQUEST
 }
 
 interface LoginSuccessAction {
-  type: typeof AUTH_TYPES.LOGIN_SUCCESS
+  type: typeof ACCOUNT_TYPES.LOGIN_SUCCESS
   payload: LoginResponse
 }
 
 interface LoginFailureAction {
-  type: typeof AUTH_TYPES.LOGIN_FAILURE
+  type: typeof ACCOUNT_TYPES.LOGIN_FAILURE
   payload: string
 }
 
 interface SignupRequestAction {
-  type: typeof AUTH_TYPES.SIGNUP_REQUEST
+  type: typeof ACCOUNT_TYPES.SIGNUP_REQUEST
 }
 
 interface SignupSuccessAction {
-  type: typeof AUTH_TYPES.SIGNUP_SUCCESS
+  type: typeof ACCOUNT_TYPES.SIGNUP_SUCCESS
   payload: SignupResponse
 }
 
 interface SignupFailureAction {
-  type: typeof AUTH_TYPES.SIGNUP_FAILURE
+  type: typeof ACCOUNT_TYPES.SIGNUP_FAILURE
   payload: string
 }
 
-export type AuthActionTypes =
+export type AccountActionTypes =
   | LoginOrSignupRequestAction
   | LoginOrSignupSuccessAction
   | LoginOrSignupFailureAction
@@ -63,107 +57,101 @@ export type AuthActionTypes =
   | SignupSuccessAction
   | SignupFailureAction
 
-export const authActions = {
+export const accountActions = {
   loginOrSignupRequest: (): LoginOrSignupRequestAction => ({
-    type: AUTH_TYPES.LOGIN_OR_SIGNUP_REQUEST,
+    type: ACCOUNT_TYPES.LOGIN_OR_SIGNUP_REQUEST,
   }),
 
-  loginOrSignupSuccess: (
-    data: LoginOrSignupResponse
-  ): LoginOrSignupSuccessAction => ({
-    type: AUTH_TYPES.LOGIN_OR_SIGNUP_SUCCESS,
+  loginOrSignupSuccess: (data: LoginOrSignupResponse): LoginOrSignupSuccessAction => ({
+    type: ACCOUNT_TYPES.LOGIN_OR_SIGNUP_SUCCESS,
     payload: data,
   }),
 
   loginOrSignupFailure: (error: string): LoginOrSignupFailureAction => ({
-    type: AUTH_TYPES.LOGIN_OR_SIGNUP_FAILURE,
+    type: ACCOUNT_TYPES.LOGIN_OR_SIGNUP_FAILURE,
     payload: error,
   }),
 
   loginRequest: (): LoginRequestAction => ({
-    type: AUTH_TYPES.LOGIN_REQUEST,
+    type: ACCOUNT_TYPES.LOGIN_REQUEST,
   }),
 
   loginSuccess: (data: LoginResponse): LoginSuccessAction => ({
-    type: AUTH_TYPES.LOGIN_SUCCESS,
+    type: ACCOUNT_TYPES.LOGIN_SUCCESS,
     payload: data,
   }),
 
   loginFailure: (error: string): LoginFailureAction => ({
-    type: AUTH_TYPES.LOGIN_FAILURE,
+    type: ACCOUNT_TYPES.LOGIN_FAILURE,
     payload: error,
   }),
 
   signupRequest: (): SignupRequestAction => ({
-    type: AUTH_TYPES.SIGNUP_REQUEST,
+    type: ACCOUNT_TYPES.SIGNUP_REQUEST,
   }),
 
   signupSuccess: (data: SignupResponse): SignupSuccessAction => ({
-    type: AUTH_TYPES.SIGNUP_SUCCESS,
+    type: ACCOUNT_TYPES.SIGNUP_SUCCESS,
     payload: data,
   }),
 
   signupFailure: (error: string): SignupFailureAction => ({
-    type: AUTH_TYPES.SIGNUP_FAILURE,
+    type: ACCOUNT_TYPES.SIGNUP_FAILURE,
     payload: error,
   }),
 
   loginOrSignup: (loginOrSignupData: LoginOrSignupData) => {
-    return async (dispatch: Dispatch<AuthActionTypes>) => {
+    return async (dispatch: Dispatch<AccountActionTypes>) => {
       try {
-        dispatch(authActions.loginOrSignupRequest())
-        const response =
-          await api.endpoints.account.getByEmail(loginOrSignupData)
+        dispatch(accountActions.loginOrSignupRequest())
+        const response = await api.endpoints.account.getByEmail(loginOrSignupData)
 
         if (!response.ok) throw new Error('Failed to check email')
 
         const data = (await response.json()) as LoginOrSignupResponse
-        dispatch(authActions.loginOrSignupSuccess(data))
+        dispatch(accountActions.loginOrSignupSuccess(data))
         return data
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : 'Login or signup failed'
-        dispatch(authActions.loginOrSignupFailure(errorMessage))
+        const errorMessage = error instanceof Error ? error.message : 'Login or signup failed'
+        dispatch(accountActions.loginOrSignupFailure(errorMessage))
         throw error
       }
     }
   },
 
   login: (loginData: LoginData) => {
-    return async (dispatch: Dispatch<AuthActionTypes>) => {
+    return async (dispatch: Dispatch<AccountActionTypes>) => {
       try {
-        dispatch(authActions.loginRequest())
+        dispatch(accountActions.loginRequest())
         const response = await api.endpoints.account.login(loginData)
 
         if (!response.ok) throw new Error('Failed to login')
 
         const data = (await response.json()) as LoginResponse
-        dispatch(authActions.loginSuccess(data))
+        dispatch(accountActions.loginSuccess(data))
         return data
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : 'Login failed'
-        dispatch(authActions.loginFailure(errorMessage))
+        const errorMessage = error instanceof Error ? error.message : 'Login failed'
+        dispatch(accountActions.loginFailure(errorMessage))
         throw error
       }
     }
   },
 
   signup: (signupData: SignupData) => {
-    return async (dispatch: Dispatch<AuthActionTypes>) => {
+    return async (dispatch: Dispatch<AccountActionTypes>) => {
       try {
-        dispatch(authActions.signupRequest())
+        dispatch(accountActions.signupRequest())
         const response = await api.endpoints.account.signup(signupData)
 
         if (!response.ok) throw new Error('Failed to signup')
 
         const data = (await response.json()) as SignupResponse
-        dispatch(authActions.signupSuccess(data))
+        dispatch(accountActions.signupSuccess(data))
         return data
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : 'Registration failed'
-        dispatch(authActions.signupFailure(errorMessage))
+        const errorMessage = error instanceof Error ? error.message : 'Registration failed'
+        dispatch(accountActions.signupFailure(errorMessage))
         throw error
       }
     }

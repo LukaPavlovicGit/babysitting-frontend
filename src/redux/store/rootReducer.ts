@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import { authReducer } from '@/redux/auth/auth.reducers'
+import { accountReducer } from '@/redux/auth/account.reducers'
 
 const userPersistConfig = {
   key: 'auth',
@@ -10,10 +10,10 @@ const userPersistConfig = {
   // whitelist: ['token', 'firstName', 'email', 'isAccountCompleted', 'isLoggedIn'],
 }
 
-const persistedAuthReducer = persistReducer(userPersistConfig, authReducer)
+const persistedAccountReducer = persistReducer(userPersistConfig, accountReducer)
 
 export const rootReducer = combineReducers({
-  auth: persistedAuthReducer,
+  account: persistedAccountReducer,
 })
 
 export type RootReducerState = ReturnType<typeof rootReducer>
