@@ -4,13 +4,12 @@ import Link from 'next/link'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/redux/store/store'
 import { useRouter } from 'next/navigation'
-import { LeftArrowSvg } from '../../components/icons/LeftArrow'
 import { SignupData, signupSchema } from '@/schemas/auth/signupSchema'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FormField from '@/components/FormField'
 import Icon from '@/components/Icon'
-import { authActions } from '@/redux/auth/auth.actions'
+import { accountActions } from '@/redux/auth/account.actions'
 
 function SignupPage() {
   const dispatch = useDispatch<AppDispatch>()
@@ -24,7 +23,7 @@ function SignupPage() {
   })
 
   const onSubmit = handleSubmit((data) => {
-    dispatch(authActions.signup(data))
+    dispatch(accountActions.signup(data))
     router.push('/login')
   })
 
@@ -35,14 +34,9 @@ function SignupPage() {
           <Link href="/login-or-signup" className="bg-white text-black p-2">
             <Icon name="LeftArrowSvg" />
           </Link>
-          <h2 className="absolute text-2xl font-bold left-1/2 -translate-x-1/2">
-            Sign Up
-          </h2>
+          <h2 className="absolute text-2xl font-bold left-1/2 -translate-x-1/2">Sign Up</h2>
         </div>
-        <form
-          onSubmit={onSubmit}
-          className="flex flex-col items-center justify-center gap-3 w-full"
-        >
+        <form onSubmit={onSubmit} className="flex flex-col items-center justify-center gap-3 w-full">
           <FormField
             type="text"
             placeholder="First Name"
@@ -75,14 +69,9 @@ function SignupPage() {
             error={errors.password}
             className="w-full px-2 py-1 text-black "
           />
-          <button className="bg-green-500 text-black px-2 py-1 w-full">
-            Sign Up
-          </button>
+          <button className="bg-green-500 text-black px-2 py-1 w-full">Sign Up</button>
         </form>
-        <Link
-          href="/forgot-password"
-          className="text-white text-left w-full underline"
-        >
+        <Link href="/forgot-password" className="text-white text-left w-full underline">
           Forgot password?
         </Link>
         <div className="flex items-center justify-center w-full gap-3">

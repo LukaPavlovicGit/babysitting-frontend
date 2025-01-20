@@ -1,22 +1,23 @@
 'use client'
 
 import { useDispatch } from 'react-redux'
-import { AppDispatch, store, RootReducerState } from '@/redux/store/store'
-import { authSelectors } from '@/redux/auth/auth.selectors'
+import { AppDispatch, store } from '@/redux/store/store'
+import { accountSelectors } from '@/redux/auth/account.selectors'
+import { RootReducerState } from '@/redux/store/rootReducer'
+import { accountActions } from '@/redux/auth/account.actions'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { LoginData, loginSchema } from '@/schemas/auth/loginSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FormField from '@/components/FormField'
-import { authActions } from '@/redux/auth/auth.actions'
 import Icon from '@/components/Icon'
 
 function LoginPage() {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
-  const email = authSelectors.getEmail(store.getState() as RootReducerState)
-  const firstName = authSelectors.getFirstName(store.getState() as RootReducerState)
+  const email = accountSelectors.getEmail(store.getState() as RootReducerState)
+  const firstName = accountSelectors.getFirstName(store.getState() as RootReducerState)
 
   const {
     register,
@@ -28,7 +29,7 @@ function LoginPage() {
 
   const onSubmit = handleSubmit(async (data: LoginData) => {
     try {
-      await dispatch(authActions.login(data))
+      await dispatch(accountActions.login(data))
       router.push('/')
     } catch (error) {
       console.error('Login failed:', error)

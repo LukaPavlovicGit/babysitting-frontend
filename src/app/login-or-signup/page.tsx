@@ -4,13 +4,10 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/redux/store/store'
 import { useRouter } from 'next/navigation'
 import FormField from '@/components/FormField'
-import {
-  LoginOrSignupData,
-  loginOrSignupSchema,
-} from '@/schemas/auth/loginOrSignupSchema'
+import { LoginOrSignupData, loginOrSignupSchema } from '@/schemas/auth/loginOrSignupSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { authActions } from '@/redux/auth/auth.actions'
+import { accountActions } from '@/redux/auth/account.actions'
 
 function LoginOrSignupPage() {
   const dispatch = useDispatch<AppDispatch>()
@@ -25,7 +22,7 @@ function LoginOrSignupPage() {
 
   const onSubmit = handleSubmit(async (data: LoginOrSignupData) => {
     try {
-      await dispatch(authActions.loginOrSignup(data))
+      await dispatch(accountActions.loginOrSignup(data))
       router.push('/login')
     } catch (error) {
       router.push('/signup')
@@ -47,9 +44,7 @@ function LoginOrSignupPage() {
             error={errors.email}
             className="px-2 py-1 text-black "
           />
-          <button className="bg-yellow-500 text-black px-2 py-1">
-            Continue
-          </button>
+          <button className="bg-yellow-500 text-black px-2 py-1">Continue</button>
         </form>
         <div className="flex items-center justify-center w-full">
           <p className="text-sm text-gray-500 ">or continue with</p>
