@@ -97,7 +97,7 @@ export default function AccountCompletionStepper() {
 }
 
 function UserTypeStep() {
-  const { updateFormData } = useAccountCompletion()
+  const { updateParentFormData, setUserType } = useAccountCompletion()
 
   return (
     <div className="size-full flex flex-col gap-8 justify-center items-center">
@@ -114,7 +114,8 @@ function UserTypeStep() {
                 onChange={(e) => {
                   const name = e.target.name
                   const value = e.target.value as UserTypeEnum
-                  updateFormData({ [name]: value })
+                  setUserType(value)
+                  updateParentFormData({ [name]: value })
                 }}
               />
             }
@@ -128,7 +129,7 @@ function UserTypeStep() {
 }
 
 function FamilyInformationStep() {
-  const { updateFormData, formData } = useAccountCompletion()
+  const { updateParentFormData, parentFormData } = useAccountCompletion()
 
   return (
     <div className="flex flex-col">
@@ -136,17 +137,17 @@ function FamilyInformationStep() {
         <div className="flex flex-col space-y-4 max-w-md">
           <div className="grid grid-cols-[140px_1fr] items-center gap-4">
             <span className="text-white font-semibold">First name</span>
-            <TextField onChange={(e) => updateFormData({ firstName: e.target.value })} />
+            <TextField onChange={(e) => updateParentFormData({ firstName: e.target.value })} />
           </div>
 
           <div className="grid grid-cols-[140px_1fr] items-center gap-4">
             <span className="text-white font-semibold">Postal code</span>
-            <TextField onChange={(e) => updateFormData({ postalCode: Number(e.target.value) })} />
+            <TextField onChange={(e) => updateParentFormData({ postalCode: Number(e.target.value) })} />
           </div>
 
           <div className="grid grid-cols-[140px_1fr] items-center gap-4">
             <span className="text-white font-semibold">Address name</span>
-            <TextField onChange={(e) => updateFormData({ addressName: e.target.value })} />
+            <TextField onChange={(e) => updateParentFormData({ addressName: e.target.value })} />
           </div>
 
           <div className="grid grid-cols-[140px_1fr] items-center gap-4">
@@ -170,13 +171,13 @@ function FamilyInformationStep() {
               onChange={(e) => {
                 const value = parseFloat(e.target.value)
                 if (value >= -90 && value <= 90) {
-                  updateFormData({ addressLatitude: value })
+                  updateParentFormData({ addressLatitude: value })
                 }
               }}
               onBlur={(e) => {
                 const value = parseFloat(e.target.value)
-                if (value < -90) updateFormData({ addressLatitude: -90 })
-                if (value > 90) updateFormData({ addressLatitude: 90 })
+                if (value < -90) updateParentFormData({ addressLatitude: -90 })
+                if (value > 90) updateParentFormData({ addressLatitude: 90 })
               }}
               placeholder="Enter latitude (-90 to 90)"
             />
@@ -203,13 +204,13 @@ function FamilyInformationStep() {
               onChange={(e) => {
                 const value = parseFloat(e.target.value)
                 if (value >= -180 && value <= 180) {
-                  updateFormData({ addressLongitude: value })
+                  updateParentFormData({ addressLongitude: value })
                 }
               }}
               onBlur={(e) => {
                 const value = parseFloat(e.target.value)
-                if (value < -180) updateFormData({ addressLongitude: -180 })
-                if (value > 180) updateFormData({ addressLongitude: 180 })
+                if (value < -180) updateParentFormData({ addressLongitude: -180 })
+                if (value > 180) updateParentFormData({ addressLongitude: 180 })
               }}
               placeholder="Enter longitude (-180 to 180)"
             />
@@ -228,7 +229,7 @@ function FamilyInformationStep() {
               onChange={(e) => {
                 const value = Number(e.target.value)
                 if (value >= 1 && value <= 10) {
-                  updateFormData({ numberOfChildren: value })
+                  updateParentFormData({ numberOfChildren: value })
                 }
               }}
             />
@@ -248,11 +249,11 @@ function FamilyInformationStep() {
                         <Checkbox
                           icon={<CheckBoxOutlineBlankIcon />}
                           checkedIcon={<CheckBoxIcon />}
-                          checked={formData.familySpeakingLanguages?.includes(language) || false}
+                          checked={parentFormData.familySpeakingLanguages?.includes(language) || false}
                           onChange={(e) => {
-                            const currentLanguages = formData.familySpeakingLanguages || []
+                            const currentLanguages = parentFormData.familySpeakingLanguages || []
                             const value = e.target.value as LanguagesEnum
-                            updateFormData({
+                            updateParentFormData({
                               familySpeakingLanguages: currentLanguages.includes(value)
                                 ? currentLanguages.filter((lang) => lang !== value)
                                 : [...currentLanguages, value],
@@ -281,11 +282,11 @@ function FamilyInformationStep() {
                         <Checkbox
                           icon={<CheckBoxOutlineBlankIcon />}
                           checkedIcon={<CheckBoxIcon />}
-                          checked={formData.childrenAgeCategories?.includes(ageCategory) || false}
+                          checked={parentFormData.childrenAgeCategories?.includes(ageCategory) || false}
                           onChange={(e) => {
-                            const currentAgeCategories = formData.childrenAgeCategories || []
+                            const currentAgeCategories = parentFormData.childrenAgeCategories || []
                             const value = e.target.value as AgeCategoryEnum
-                            updateFormData({
+                            updateParentFormData({
                               childrenAgeCategories: currentAgeCategories.includes(value)
                                 ? currentAgeCategories.filter((age) => age !== value)
                                 : [...currentAgeCategories, value],
@@ -314,12 +315,12 @@ function FamilyInformationStep() {
                         <Checkbox
                           icon={<CheckBoxOutlineBlankIcon />}
                           checkedIcon={<CheckBoxIcon />}
-                          checked={formData.childrenCharacteristics?.includes(characteristic) || false}
+                          checked={parentFormData.childrenCharacteristics?.includes(characteristic) || false}
                           onChange={(e) => {
-                            const currentCharacteristics = formData.childrenCharacteristics || []
+                            const currentCharacteristics = parentFormData.childrenCharacteristics || []
                             const value = e.target.value as CharacteristicsEnum
 
-                            updateFormData({
+                            updateParentFormData({
                               childrenCharacteristics: currentCharacteristics.includes(value)
                                 ? currentCharacteristics.filter((char) => char !== value)
                                 : [...currentCharacteristics, value],
@@ -343,7 +344,7 @@ function FamilyInformationStep() {
               className="w-full p-2 rounded bg-gray-700 text-white resize-none overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
               rows={4}
               placeholder="Enter family description..."
-              onChange={(e) => updateFormData({ familyDescription: e.target.value })}
+              onChange={(e) => updateParentFormData({ familyDescription: e.target.value })}
             />
           </div>
         </div>
@@ -353,7 +354,7 @@ function FamilyInformationStep() {
 }
 
 function WhatDoYouNeedFromBabysitterStep() {
-  const { updateFormData, formData } = useAccountCompletion()
+  const { updateParentFormData, parentFormData } = useAccountCompletion()
 
   const timeSlots = ['Morning', 'Afternoon', 'Evening', 'Night']
   const days = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
@@ -376,9 +377,9 @@ function WhatDoYouNeedFromBabysitterStep() {
                         <Checkbox
                           icon={<CheckBoxOutlineBlankIcon />}
                           checkedIcon={<CheckBoxIcon />}
-                          checked={formData.currency === currency}
+                          checked={parentFormData.currency === currency}
                           onChange={(e) => {
-                            updateFormData({
+                            updateParentFormData({
                               currency: e.target.value as CurrencyEnum,
                             })
                           }}
@@ -400,7 +401,7 @@ function WhatDoYouNeedFromBabysitterStep() {
                 min: 0,
                 step: 0.01,
               }}
-              onChange={(e) => updateFormData({ rate: Number(e.target.value) })}
+              onChange={(e) => updateParentFormData({ rate: Number(e.target.value) })}
               sx={{
                 '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
                   WebkitAppearance: 'none',
@@ -427,9 +428,9 @@ function WhatDoYouNeedFromBabysitterStep() {
                         <Checkbox
                           icon={<CheckBoxOutlineBlankIcon />}
                           checkedIcon={<CheckBoxIcon />}
-                          checked={formData.jobLocation === jobLocation}
+                          checked={parentFormData.jobLocation === jobLocation}
                           onChange={(e) => {
-                            updateFormData({
+                            updateParentFormData({
                               jobLocation: e.target.value as JobLocationEnum,
                             })
                           }}
@@ -469,16 +470,17 @@ function WhatDoYouNeedFromBabysitterStep() {
                       <div key={`${day}${timeSlot}`} className="flex justify-center items-center">
                         <Checkbox
                           checked={
-                            formData.schedule?.[`${day}${timeSlot}`.toLowerCase() as keyof typeof formData.schedule] ||
-                            false
+                            parentFormData.schedule?.[
+                              `${day}${timeSlot}`.toLowerCase() as keyof typeof parentFormData.schedule
+                            ] || false
                           }
                           onChange={(e) => {
-                            const key = `${day}${timeSlot}`.toLowerCase() as keyof typeof formData.schedule
-                            updateFormData({
+                            const key = `${day}${timeSlot}`.toLowerCase() as keyof typeof parentFormData.schedule
+                            updateParentFormData({
                               schedule: {
-                                ...formData.schedule,
+                                ...parentFormData.schedule,
                                 [key]: e.target.checked,
-                              } as typeof formData.schedule,
+                              } as typeof parentFormData.schedule,
                             })
                           }}
                         />

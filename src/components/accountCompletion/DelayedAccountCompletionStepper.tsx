@@ -12,8 +12,8 @@ export default function DelayedAccountCompletionStepper() {
   const pathname = usePathname()
   const [show, setShow] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn)
-  const isAccountCompleted = useSelector((state: RootState) => state.auth.isAccountCompleted)
+  const isLoggedIn = useSelector((state: RootState) => state.account.isLoggedIn)
+  const isAccountCompleted = useSelector((state: RootState) => state.account.isAccountCompleted)
 
   useEffect(() => {
     setMounted(true)

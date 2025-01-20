@@ -8,6 +8,9 @@ export const ACCOUNT_TYPES = {
   SIGNUP_REQUEST: 'account/signupRequest',
   SIGNUP_SUCCESS: 'account/signupSuccess',
   SIGNUP_FAILURE: 'account/signupFailure',
+  ACCOUNT_COMPLETION_REQUEST: 'account/partialAccountCompletionRequest',
+  ACCOUNT_COMPLETION_SUCCESS: 'account/partialAccountCompletionSuccess',
+  ACCOUNT_COMPLETION_FAILURE: 'account/partialAccountCompletionFailure',
 } as const
 
 export interface AuthState {
@@ -33,4 +36,8 @@ export interface LoginResponse {
 export interface SignupResponse {
   firstName: string
   email: string
+}
+
+export interface AccountCompletionResponse {
+  isAccountCompleted: boolean
 }
