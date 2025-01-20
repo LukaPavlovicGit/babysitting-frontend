@@ -36,13 +36,11 @@ type StepConfig = {
 }
 
 type AccountSetupConfig = {
-  totalSteps: number
   steps: StepConfig[]
 }
 
 const config: Record<UserTypeEnum, AccountSetupConfig> = {
   [UserTypeEnum.PARENT]: {
-    totalSteps: 3,
     steps: [
       {
         stepNumber: 1,
@@ -81,7 +79,6 @@ const config: Record<UserTypeEnum, AccountSetupConfig> = {
     ],
   },
   [UserTypeEnum.BABYSITTER]: {
-    totalSteps: 3,
     steps: [
       {
         stepNumber: 1,
@@ -143,14 +140,12 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
   const [babysitterFormData, setBabysitterFormData] = useState<Partial<BabysitterAccountCompletionData>>({})
   const [errors, setErrors] = useState<z.ZodError | null>(null)
   const [canProceed, setCanProceed] = useState(false)
-  const [userType, setUserType] = useState<UserTypeEnum | null>(null)
+  const [userType, setUserType] = useState<UserTypeEnum>(UserTypeEnum.PARENT)
 
   const validateCurrentStep = useCallback(() => {
     try {
-      if (!userType) return false
-
       config[userType].steps[currentStep].validationSchema.parse(parentFormData)
-      stepValidationSchemas[currentStep].parse(parentFormData)
+      // stepValidationSchemas[currentStep].parse(parentFormData)
       setErrors(null)
       setCanProceed(true)
       return true
@@ -175,7 +170,7 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
   }
 
   const nextStep = () => {
-    if (validateCurrentStep() && currentStep < stepValidationSchemas.length - 1) {
+    if (validateCurrentStep() && currentStep < config[userType].steps.length - 1) {
       setCurrentStep((prev) => prev + 1)
     }
   }
