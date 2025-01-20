@@ -7,7 +7,7 @@ import { SkillsEnum } from '@/types/enums/SkillsEnum'
 import { UserTypeEnum } from '@/types/enums/UserTypeEnum'
 import { z } from 'zod'
 
-export const accountCompletionSchema = z.object({
+export const parentAccountCompletionSchema = z.object({
   userType: z.nativeEnum(UserTypeEnum, {
     errorMap: () => ({ message: 'User type must be PARENT or BABYSITTER' }),
   }),
@@ -77,4 +77,4 @@ export const accountCompletionSchema = z.object({
   subscribeToJobNotifications: z.boolean().optional(),
 })
 
-export type AccountCompletionData = z.infer<typeof accountCompletionSchema>
+export type ParentAccountCompletionData = z.infer<typeof parentAccountCompletionSchema>

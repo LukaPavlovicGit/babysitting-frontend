@@ -3,8 +3,8 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AccountCompletionData } from '@/schemas/accountCompletionSchema'
-import { accountCompletionSchema } from '@/schemas/accountCompletionSchema'
+import { ParentAccountCompletionData } from '@/schemas/parentAccountCompletionSchema'
+import { parentAccountCompletionSchema } from '@/schemas/parentAccountCompletionSchema'
 import { UserTypeEnum } from '@/types/enums/UserTypeEnum'
 import { LanguagesEnum } from '@/types/enums/LanguagesEnum'
 
@@ -30,8 +30,8 @@ export default function AccountCompletionStepper() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AccountCompletionData>({
-    resolver: zodResolver(accountCompletionSchema),
+  } = useForm<ParentAccountCompletionData>({
+    resolver: zodResolver(parentAccountCompletionSchema),
   })
 
   const onSubmit = handleSubmit((data) => {

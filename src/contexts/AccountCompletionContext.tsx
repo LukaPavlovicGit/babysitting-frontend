@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { z } from 'zod'
-import { accountCompletionSchema, AccountCompletionData } from '@/schemas/accountCompletionSchema'
+import { parentAccountCompletionSchema, ParentAccountCompletionData } from '@/schemas/parentAccountCompletionSchema'
 import { UserTypeEnum } from '@/types/enums/UserTypeEnum'
 
 interface AccountCompletionContextType {
   currentStep: number
-  formData: Partial<AccountCompletionData>
-  updateFormData: (data: Partial<AccountCompletionData>) => void
+  formData: Partial<ParentAccountCompletionData>
+  updateFormData: (data: Partial<ParentAccountCompletionData>) => void
   nextStep: () => void
   prevStep: () => void
   isParent: () => boolean
@@ -25,11 +25,13 @@ export const useAccountCompletion = () => {
   return context
 }
 
+const config = {}
+
 const stepValidationSchemas = [
   // Step 1: User Type
-  accountCompletionSchema.pick({ userType: true }),
+  parentAccountCompletionSchema.pick({ userType: true }),
   // Step 2: Family Information
-  accountCompletionSchema.pick({
+  parentAccountCompletionSchema.pick({
     firstName: true,
     postalCode: true,
     addressName: true,
@@ -42,7 +44,7 @@ const stepValidationSchemas = [
     familyDescription: true,
   }),
   // Step 3: Schedule/Needs
-  accountCompletionSchema.pick({
+  parentAccountCompletionSchema.pick({
     currency: true,
     rate: true,
     jobLocation: true,
@@ -53,9 +55,10 @@ const stepValidationSchemas = [
 
 export function AccountCompletionProvider({ children }: { children: React.ReactNode }) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [formData, setFormData] = useState<Partial<AccountCompletionData>>({})
+  const [formData, setFormData] = useState<Partial<ParentAccountCompletionData>>({})
   const [errors, setErrors] = useState<z.ZodError | null>(null)
   const [canProceed, setCanProceed] = useState(false)
+  const [userType, setUserType = () => {}] = useState<UserTypeEnum | null>(null)
 
   const validateCurrentStep = useCallback(() => {
     try {
@@ -73,7 +76,7 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
     }
   }, [currentStep, formData])
 
-  const updateFormData = (data: Partial<AccountCompletionData>) => {
+  const updateFormData = (data: Partial<ParentAccountCompletionData>) => {
     setFormData((prev) => ({ ...prev, ...data }))
     validateCurrentStep()
   }
