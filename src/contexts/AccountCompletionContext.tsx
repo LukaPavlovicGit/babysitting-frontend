@@ -2,7 +2,10 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { z } from 'zod'
 import { parentAccountCompletionSchema, ParentAccountCompletionData } from '@/schemas/parentAccountCompletionSchema'
 import { UserTypeEnum } from '@/types/enums/UserTypeEnum'
-import { BabysitterAccountCompletionData } from '@/schemas/babysitterAccountCompletionSchema'
+import {
+  BabysitterAccountCompletionData,
+  babysitterAccountCompletionSchema,
+} from '@/schemas/babysitterAccountCompletionSchema'
 
 interface AccountCompletionContextType {
   currentStep: number
@@ -16,12 +19,13 @@ interface AccountCompletionContextType {
   isBabysitter: () => boolean
   canProceed: boolean
   setUserType: (userType: UserTypeEnum) => void
+  getSteps: () => string[]
   errors: z.ZodError | null
 }
 
 const AccountCompletionContext = createContext<AccountCompletionContextType | undefined>(undefined)
 
-export const useAccountCompletion = () => {
+export const useAccountCompletionContext = () => {
   const context = useContext(AccountCompletionContext)
   if (!context) {
     throw new Error('useAccountCompletion must be used within AccountCompletionProvider')
@@ -29,123 +33,85 @@ export const useAccountCompletion = () => {
   return context
 }
 
-type StepConfig = {
-  stepNumber: number
-  validationSchema: z.ZodSchema
-  title: string
+type AccountCompletionConfig = {
+  schemas: z.ZodSchema[]
+  steps: string[]
 }
 
-type AccountSetupConfig = {
-  steps: StepConfig[]
-}
-
-const config: Record<UserTypeEnum, AccountSetupConfig> = {
+export const config: Record<UserTypeEnum, AccountCompletionConfig> = {
   [UserTypeEnum.PARENT]: {
-    steps: [
-      {
-        stepNumber: 1,
-        title: 'User Type',
-        validationSchema: parentAccountCompletionSchema.pick({
-          userType: true,
-        }),
-      },
-      {
-        stepNumber: 2,
-        title: 'Family Information',
-        validationSchema: parentAccountCompletionSchema.pick({
-          firstName: true,
-          postalCode: true,
-          addressName: true,
-          addressLatitude: true,
-          addressLongitude: true,
-          familySpeakingLanguages: true,
-          numberOfChildren: true,
-          childrenAgeCategories: true,
-          childrenCharacteristics: true,
-          familyDescription: true,
-        }),
-      },
-      {
-        stepNumber: 3,
-        title: 'Schedule & Needs',
-        validationSchema: parentAccountCompletionSchema.pick({
-          currency: true,
-          rate: true,
-          jobLocation: true,
-          schedule: true,
-          preferebleSkills: true,
-        }),
-      },
+    steps: ['Family Information', 'Schedule & Needs'],
+    schemas: [
+      parentAccountCompletionSchema.pick({
+        firstName: true,
+        postalCode: true,
+        addressName: true,
+        addressLatitude: true,
+        addressLongitude: true,
+        familySpeakingLanguages: true,
+        numberOfChildren: true,
+        childrenAgeCategories: true,
+        childrenCharacteristics: true,
+        familyDescription: true,
+      }),
+      parentAccountCompletionSchema.pick({
+        currency: true,
+        rate: true,
+        jobLocation: true,
+        schedule: true,
+        preferebleSkills: true,
+      }),
     ],
   },
   [UserTypeEnum.BABYSITTER]: {
-    steps: [
-      {
-        stepNumber: 1,
-        title: 'User Type',
-        validationSchema: parentAccountCompletionSchema.pick({}),
-      },
-      {
-        stepNumber: 2,
-        title: 'Personal Information',
-        validationSchema: parentAccountCompletionSchema.pick({
-          // Add babysitter specific fields
-        }),
-      },
-      {
-        stepNumber: 3,
-        title: 'Experience & Availability',
-        validationSchema: parentAccountCompletionSchema.pick({
-          // Add babysitter specific fields
-        }),
-      },
+    steps: ['Personal Information', 'Experience & Availability'],
+    schemas: [
+      babysitterAccountCompletionSchema.pick({
+        firstName: true,
+        postalCode: true,
+        addressName: true,
+        addressLatitude: true,
+        addressLongitude: true,
+        speakingLanguages: true,
+        skills: true,
+      }),
+      babysitterAccountCompletionSchema.pick({
+        currency: true,
+        rate: true,
+        jobLocation: true,
+        schedule: true,
+      }),
     ],
   },
 }
 
-// Helper function with enum type
-const getStepperConfig = (userType: UserTypeEnum): AccountSetupConfig => {
-  return config[userType]
-}
-
-const stepValidationSchemas = [
-  // Step 1: User Type
-  parentAccountCompletionSchema.pick({ userType: true }),
-  // Step 2: Family Information
-  parentAccountCompletionSchema.pick({
-    firstName: true,
-    postalCode: true,
-    addressName: true,
-    addressLatitude: true,
-    addressLongitude: true,
-    familySpeakingLanguages: true,
-    numberOfChildren: true,
-    childrenAgeCategories: true,
-    childrenCharacteristics: true,
-    familyDescription: true,
-  }),
-  // Step 3: Schedule/Needs
-  parentAccountCompletionSchema.pick({
-    currency: true,
-    rate: true,
-    jobLocation: true,
-    schedule: true,
-    preferebleSkills: true,
-  }),
-]
-
 export function AccountCompletionProvider({ children }: { children: React.ReactNode }) {
-  const [currentStep, setCurrentStep] = useState(0)
+  const [currentStep, setCurrentStep] = useState(-1)
   const [parentFormData, setParentFormData] = useState<Partial<ParentAccountCompletionData>>({})
   const [babysitterFormData, setBabysitterFormData] = useState<Partial<BabysitterAccountCompletionData>>({})
   const [errors, setErrors] = useState<z.ZodError | null>(null)
   const [canProceed, setCanProceed] = useState(false)
-  const [userType, setUserType] = useState<UserTypeEnum>(UserTypeEnum.PARENT)
+  const [userType, setUserType] = useState<UserTypeEnum | null>(null)
 
   const validateCurrentStep = useCallback(() => {
     try {
-      config[userType].steps[currentStep].validationSchema.parse(parentFormData)
-      // stepValidationSchemas[currentStep].parse(parentFormData)
+      if (currentStep === -1) {
+        if (!userType) {
+          setCanProceed(false)
+          return false
+        }
+        setCanProceed(true)
+        return true
+      }
+
+      if (!userType) {
+        setCanProceed(false)
+        return false
+      }
+
+      config[userType].schemas[currentStep].parse(
+        userType === UserTypeEnum.PARENT ? parentFormData : babysitterFormData
+      )
       setErrors(null)
       setCanProceed(true)
       return true
@@ -157,7 +123,7 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
       setCanProceed(false)
       return false
     }
-  }, [currentStep, parentFormData, userType])
+  }, [babysitterFormData, currentStep, parentFormData, userType])
 
   const updateParentFormData = (data: Partial<ParentAccountCompletionData>) => {
     setParentFormData((prev) => ({ ...prev, ...data }))
@@ -170,25 +136,23 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
   }
 
   const nextStep = () => {
-    if (validateCurrentStep() && currentStep < config[userType].steps.length - 1) {
+    if (!userType) return
+    if (currentStep === -1 || (validateCurrentStep() && currentStep < config[userType].schemas.length - 1)) {
       setCurrentStep((prev) => prev + 1)
     }
   }
 
   const prevStep = () => {
-    if (currentStep > 0) {
+    if (currentStep > -1) {
       setCurrentStep((prev) => prev - 1)
-      invalidateCurrentStep()
     }
   }
 
-  const invalidateCurrentStep = () => {
-    stepValidationSchemas[currentStep].parse({})
-  }
+  const isParent = () => userType === UserTypeEnum.PARENT
 
-  const isParent = () => parentFormData.userType === UserTypeEnum.PARENT
+  const isBabysitter = () => userType === UserTypeEnum.BABYSITTER
 
-  const isBabysitter = () => parentFormData.userType === UserTypeEnum.BABYSITTER
+  const getSteps = () => (userType ? config[userType].steps : [])
 
   useEffect(() => {
     validateCurrentStep()
@@ -206,6 +170,7 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
     isBabysitter,
     canProceed,
     setUserType,
+    getSteps,
     errors,
   }
 

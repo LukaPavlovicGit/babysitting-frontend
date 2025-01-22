@@ -4,13 +4,9 @@ import { CurrencyEnum } from '@/types/enums/CurrencyEnum'
 import { JobLocationEnum } from '@/types/enums/JobLocationEnum'
 import { LanguagesEnum } from '@/types/enums/LanguagesEnum'
 import { SkillsEnum } from '@/types/enums/SkillsEnum'
-import { UserTypeEnum } from '@/types/enums/UserTypeEnum'
 import { z } from 'zod'
 
 export const parentAccountCompletionSchema = z.object({
-  userType: z.nativeEnum(UserTypeEnum, {
-    errorMap: () => ({ message: 'User type must be PARENT or BABYSITTER' }),
-  }),
   postalCode: z.number().min(1, { message: 'Postal code must be a number' }),
   firstName: z.string().min(1, { message: 'First name must be picked' }),
   addressName: z.string().min(1, { message: 'Address name must be picked' }),
