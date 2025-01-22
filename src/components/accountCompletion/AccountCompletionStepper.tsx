@@ -21,11 +21,77 @@ import { AgeCategoryEnum } from '@/types/enums/AgeCategoryEnum'
 import { CharacteristicsEnum } from '@/types/enums/CharacteristicsEnum'
 import { CurrencyEnum } from '@/types/enums/CurrencyEnum'
 import { JobLocationEnum } from '@/types/enums/JobLocationEnum'
+import { SkillsEnum } from '@/types/enums/SkillsEnum'
 
 const steps = ['Choose Role', 'Family Information', 'What do you need from babysitter?']
 
 export default function AccountCompletionStepper() {
-  const { currentStep, nextStep, prevStep, canProceed, isParent } = useAccountCompletion()
+  const { currentStep, nextStep, prevStep, canProceed, isParent, isBabysitter } = useAccountCompletion()
+
+  return (
+    <Box className="flex flex-col flex-grow w-full gap-12 justify-between items-center bg-[#4B545C] rounded-lg p-5">
+      <StepperHeader />
+      <StepperContent />
+      <StepperFooter />
+    </Box>
+  )
+}
+
+function StepperHeader() {
+  const { currentStep } = useAccountCompletion()
+
+  return (
+    <Stepper activeStep={currentStep} alternativeLabel>
+      {steps.map((label, index) => {
+        const stepProps: { completed?: boolean } = {}
+        return (
+          <Step
+            key={label}
+            {...stepProps}
+            sx={{
+              '& .MuiStepLabel-root .Mui-completed': {
+                color: 'black',
+              },
+              '& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel': {
+                color: 'black',
+              },
+              '& .MuiStepLabel-root .Mui-active': {
+                color: 'white',
+              },
+              '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel': {
+                color: 'white',
+              },
+              '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
+                fill: 'black',
+                fontWeight: 'bold',
+                fontSize: '24px',
+              },
+            }}
+          >
+            <StepLabel className="text-white">{label}</StepLabel>
+          </Step>
+        )
+      })}
+    </Stepper>
+  )
+}
+
+function StepperContent() {
+  const { currentStep, isParent, isBabysitter } = useAccountCompletion()
+
+  return (
+    <>
+      {currentStep === 0 && <UserTypeStep />}
+      {isParent() && currentStep === 1 && <FamilyInformationStep />}
+      {isParent() && currentStep === 2 && <WhatDoYouNeedFromBabysitterStep />}
+      {isBabysitter() && currentStep === 1 && <BabySitterInformationStep />}
+    </>
+  )
+}
+
+function StepperFooter() {
+  const { currentStep, nextStep, prevStep, canProceed, isParent, isBabysitter } = useAccountCompletion()
+
   const {
     register,
     handleSubmit,
@@ -39,60 +105,21 @@ export default function AccountCompletionStepper() {
   })
 
   return (
-    <Box className="flex flex-col flex-grow w-full gap-12 justify-between items-center bg-[#4B545C] rounded-lg p-5">
-      <Stepper activeStep={currentStep} alternativeLabel>
-        {steps.map((label, index) => {
-          const stepProps: { completed?: boolean } = {}
-          return (
-            <Step
-              key={label}
-              {...stepProps}
-              sx={{
-                '& .MuiStepLabel-root .Mui-completed': {
-                  color: 'black',
-                },
-                '& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel': {
-                  color: 'black',
-                },
-                '& .MuiStepLabel-root .Mui-active': {
-                  color: 'white',
-                },
-                '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel': {
-                  color: 'white',
-                },
-                '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
-                  fill: 'black',
-                  fontWeight: 'bold',
-                  fontSize: '24px',
-                },
-              }}
-            >
-              <StepLabel className="text-white">{label}</StepLabel>
-            </Step>
-          )
-        })}
-      </Stepper>
+    <div className="flex w-full justify-between pt-4">
+      <Button onClick={prevStep} disabled={currentStep === 0} variant="contained" color="info">
+        Back
+      </Button>
 
-      {currentStep === 0 && <UserTypeStep />}
-      {isParent() && currentStep === 1 && <FamilyInformationStep />}
-      {isParent() && currentStep === 2 && <WhatDoYouNeedFromBabysitterStep />}
-
-      <div className="flex w-full justify-between pt-4">
-        <Button onClick={prevStep} disabled={currentStep === 0} variant="contained" color="info">
-          Back
+      {currentStep < steps.length - 1 ? (
+        <Button onClick={nextStep} disabled={!canProceed} variant="contained" color="info">
+          Next
         </Button>
-
-        {currentStep < steps.length - 1 ? (
-          <Button onClick={nextStep} disabled={!canProceed} variant="contained" color="info">
-            Next
-          </Button>
-        ) : (
-          <Button onClick={onSubmit} disabled={!canProceed} variant="contained" color="success">
-            Complete
-          </Button>
-        )}
-      </div>
-    </Box>
+      ) : (
+        <Button onClick={onSubmit} disabled={!canProceed} variant="contained" color="success">
+          Complete
+        </Button>
+      )}
+    </div>
   )
 }
 
@@ -126,6 +153,10 @@ function UserTypeStep() {
       </RadioGroup>
     </div>
   )
+}
+
+function BabySitterInformationStep() {
+  return <div>BabySitterInformationStep</div>
 }
 
 function FamilyInformationStep() {
@@ -437,6 +468,42 @@ function WhatDoYouNeedFromBabysitterStep() {
                         />
                       }
                       label={jobLocation}
+                      className="text-white"
+                    />
+                  ))}
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col space-y-4 max-w-md">
+          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
+            <span className="text-white font-semibold">What are the specific skills you need from babysitter?</span>
+            <div>
+              <RadioGroup name="jobLocation">
+                <div className="grid grid-rows-2">
+                  {Object.values(SkillsEnum).map((skill) => (
+                    <FormControlLabel
+                      key={skill}
+                      value={skill}
+                      control={
+                        <Checkbox
+                          icon={<CheckBoxOutlineBlankIcon />}
+                          checkedIcon={<CheckBoxIcon />}
+                          checked={parentFormData.preferebleSkills?.includes(skill) || false}
+                          onChange={(e) => {
+                            const currentSkills = parentFormData.preferebleSkills || []
+                            const value = e.target.value as SkillsEnum
+
+                            updateParentFormData({
+                              preferebleSkills: currentSkills.includes(value)
+                                ? currentSkills.filter((char) => char !== value)
+                                : [...currentSkills, value],
+                            })
+                          }}
+                        />
+                      }
+                      label={skill}
                       className="text-white"
                     />
                   ))}
