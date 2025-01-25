@@ -94,7 +94,7 @@ function AccountCompletionStepperContent() {
 }
 
 function AccountCompletionStepperFooter() {
-  const { currentStep, nextStep, prevStep, canProceed, getSteps } = useAccountCompletionContext()
+  const { currentStep, nextStep, prevStep, canProceed, getSteps, onComplete } = useAccountCompletionContext()
 
   const {
     register,
@@ -104,8 +104,8 @@ function AccountCompletionStepperFooter() {
     resolver: zodResolver(parentAccountCompletionSchema),
   })
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data)
+  const onSubmit = handleSubmit(async () => {
+    await onComplete()
   })
 
   return (

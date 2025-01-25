@@ -2,6 +2,8 @@ export const ENDPOINTS = {
   account: {
     login: '/account/login',
     signup: '/account/register',
+    completeParentAccount: '/account/parent-account-complete',
+    completeBabysitterAccount: '/account/babysitter-account-complete',
     logout: '/account/logout',
     resetPassword: '/account/reset-password',
     get: '/account',

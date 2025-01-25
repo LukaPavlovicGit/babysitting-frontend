@@ -6,6 +6,9 @@ import {
   BabysitterAccountCompletionData,
   babysitterAccountCompletionSchema,
 } from '@/schemas/babysitterAccountCompletionSchema'
+import { accountActions } from '@/redux/auth/account.actions'
+import { AppDispatch } from '@/redux/store/store'
+import { useDispatch } from 'react-redux'
 
 interface AccountCompletionContextType {
   currentStep: number
@@ -21,6 +24,7 @@ interface AccountCompletionContextType {
   setUserType: (userType: UserTypeEnum) => void
   getSteps: () => string[]
   errors: z.ZodError | null
+  onComplete: () => Promise<void>
 }
 
 const AccountCompletionContext = createContext<AccountCompletionContextType | undefined>(undefined)
@@ -86,6 +90,7 @@ export const config: Record<UserTypeEnum, AccountCompletionConfig> = {
 }
 
 export function AccountCompletionProvider({ children }: { children: React.ReactNode }) {
+  const dispatch = useDispatch<AppDispatch>()
   const [currentStep, setCurrentStep] = useState(-1)
   const [parentFormData, setParentFormData] = useState<Partial<ParentAccountCompletionData>>({})
   const [babysitterFormData, setBabysitterFormData] = useState<Partial<BabysitterAccountCompletionData>>({})
@@ -154,6 +159,17 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
 
   const getSteps = () => (userType ? config[userType].steps : [])
 
+  const onComplete = () => {
+    if (isParent()) {
+      dispatch(accountActions.completeParentAccount(parentFormData as ParentAccountCompletionData))
+    } else if (isBabysitter()) {
+      dispatch(accountActions.completeBabysitterAccount(babysitterFormData as BabysitterAccountCompletionData))
+    } else {
+      throw new Error('Invalid user type')
+    }
+    return Promise.resolve()
+  }
+
   useEffect(() => {
     validateCurrentStep()
   }, [validateCurrentStep])
@@ -172,6 +188,7 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
     setUserType,
     getSteps,
     errors,
+    onComplete,
   }
 
   return <AccountCompletionContext.Provider value={value}>{children}</AccountCompletionContext.Provider>
