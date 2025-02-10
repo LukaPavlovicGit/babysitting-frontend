@@ -9,8 +9,7 @@ import {
 import { LoginData, SignupData } from '@/schemas/auth'
 import { api } from '@/endpoints'
 import { LoginOrSignupData } from '@/schemas/auth/loginOrSignupSchema'
-import { ParentAccountCompletionData } from '@/schemas/parentAccountCompletionSchema'
-import { BabysitterAccountCompletionData } from '@/schemas/babysitterAccountCompletionSchema'
+import { AccountCompletionData } from '@/schemas/accountCompletionSchena'
 
 interface LoginOrSignupRequestAction {
   type: typeof ACCOUNT_TYPES.LOGIN_OR_SIGNUP_REQUEST
@@ -54,31 +53,17 @@ interface SignupFailureAction {
   payload: string
 }
 
-interface ParentAccountCompletionRequestAction {
-  type: typeof ACCOUNT_TYPES.PARENT_ACCOUNT_COMPLETION_REQUEST
+interface AccountCompletionRequestAction {
+  type: typeof ACCOUNT_TYPES.ACCOUNT_COMPLETION_REQUEST
 }
 
-interface ParentAccountCompletionSuccessAction {
-  type: typeof ACCOUNT_TYPES.PARENT_ACCOUNT_COMPLETION_SUCCESS
+interface AccountCompletionSuccessAction {
+  type: typeof ACCOUNT_TYPES.ACCOUNT_COMPLETION_SUCCESS
   payload: AccountCompletionResponse
 }
 
-interface ParentAccountCompletionFailureAction {
-  type: typeof ACCOUNT_TYPES.PARENT_ACCOUNT_COMPLETION_FAILURE
-  payload: string
-}
-
-interface BabysitterAccountCompletionRequestAction {
-  type: typeof ACCOUNT_TYPES.BABYSITTER_ACCOUNT_COMPLETION_REQUEST
-}
-
-interface BabysitterAccountCompletionSuccessAction {
-  type: typeof ACCOUNT_TYPES.BABYSITTER_ACCOUNT_COMPLETION_SUCCESS
-  payload: AccountCompletionResponse
-}
-
-interface BabysitterAccountCompletionFailureAction {
-  type: typeof ACCOUNT_TYPES.BABYSITTER_ACCOUNT_COMPLETION_FAILURE
+interface AccountCompletionFailureAction {
+  type: typeof ACCOUNT_TYPES.ACCOUNT_COMPLETION_FAILURE
   payload: string
 }
 
@@ -92,12 +77,9 @@ export type AccountActionTypes =
   | SignupRequestAction
   | SignupSuccessAction
   | SignupFailureAction
-  | ParentAccountCompletionRequestAction
-  | ParentAccountCompletionSuccessAction
-  | ParentAccountCompletionFailureAction
-  | BabysitterAccountCompletionRequestAction
-  | BabysitterAccountCompletionSuccessAction
-  | BabysitterAccountCompletionFailureAction
+  | AccountCompletionRequestAction
+  | AccountCompletionSuccessAction
+  | AccountCompletionFailureAction
 
 export const accountActions = {
   loginOrSignupRequest: (): LoginOrSignupRequestAction => ({
@@ -142,31 +124,17 @@ export const accountActions = {
     payload: error,
   }),
 
-  parentAccountCompletionRequest: (): ParentAccountCompletionRequestAction => ({
-    type: ACCOUNT_TYPES.PARENT_ACCOUNT_COMPLETION_REQUEST,
+  accountCompletionRequest: (): AccountCompletionRequestAction => ({
+    type: ACCOUNT_TYPES.ACCOUNT_COMPLETION_REQUEST,
   }),
 
-  parentAccountCompletionSuccess: (data: AccountCompletionResponse): ParentAccountCompletionSuccessAction => ({
-    type: ACCOUNT_TYPES.PARENT_ACCOUNT_COMPLETION_SUCCESS,
+  accountCompletionSuccess: (data: AccountCompletionResponse): AccountCompletionSuccessAction => ({
+    type: ACCOUNT_TYPES.ACCOUNT_COMPLETION_SUCCESS,
     payload: data,
   }),
 
-  parentAccountCompletionFailure: (error: string): ParentAccountCompletionFailureAction => ({
-    type: ACCOUNT_TYPES.PARENT_ACCOUNT_COMPLETION_FAILURE,
-    payload: error,
-  }),
-
-  babysitterAccountCompletionRequest: (): BabysitterAccountCompletionRequestAction => ({
-    type: ACCOUNT_TYPES.BABYSITTER_ACCOUNT_COMPLETION_REQUEST,
-  }),
-
-  babysitterAccountCompletionSuccess: (data: AccountCompletionResponse): BabysitterAccountCompletionSuccessAction => ({
-    type: ACCOUNT_TYPES.BABYSITTER_ACCOUNT_COMPLETION_SUCCESS,
-    payload: data,
-  }),
-
-  babysitterAccountCompletionFailure: (error: string): BabysitterAccountCompletionFailureAction => ({
-    type: ACCOUNT_TYPES.BABYSITTER_ACCOUNT_COMPLETION_FAILURE,
+  accountCompletionFailure: (error: string): AccountCompletionFailureAction => ({
+    type: ACCOUNT_TYPES.ACCOUNT_COMPLETION_FAILURE,
     payload: error,
   }),
 
@@ -227,28 +195,15 @@ export const accountActions = {
     }
   },
 
-  completeParentAccount: (parentAccountCompletionData: ParentAccountCompletionData) => {
+  completeAccount: (accountCompletionData: AccountCompletionData) => {
     return async (dispatch: Dispatch<AccountActionTypes>) => {
-      dispatch(accountActions.parentAccountCompletionRequest())
-      const response = await api.endpoints.account.completeParentAccount(parentAccountCompletionData)
+      dispatch(accountActions.accountCompletionRequest())
+      const response = await api.endpoints.account.completeAccount(accountCompletionData)
 
-      if (!response.ok) throw new Error('Failed to complete parent account')
+      if (!response.ok) throw new Error('Failed to complete account')
 
       const data = (await response.json()) as AccountCompletionResponse
-      dispatch(accountActions.parentAccountCompletionSuccess(data))
-      return data
-    }
-  },
-
-  completeBabysitterAccount: (babysitterAccountCompletionData: BabysitterAccountCompletionData) => {
-    return async (dispatch: Dispatch<AccountActionTypes>) => {
-      dispatch(accountActions.babysitterAccountCompletionRequest())
-      const response = await api.endpoints.account.completeBabysitterAccount(babysitterAccountCompletionData)
-
-      if (!response.ok) throw new Error('Failed to complete babysitter account')
-
-      const data = (await response.json()) as AccountCompletionResponse
-      dispatch(accountActions.babysitterAccountCompletionSuccess(data))
+      dispatch(accountActions.accountCompletionSuccess(data))
       return data
     }
   },

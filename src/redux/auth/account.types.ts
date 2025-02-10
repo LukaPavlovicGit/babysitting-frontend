@@ -8,12 +8,9 @@ export const ACCOUNT_TYPES = {
   SIGNUP_REQUEST: 'account/signupRequest',
   SIGNUP_SUCCESS: 'account/signupSuccess',
   SIGNUP_FAILURE: 'account/signupFailure',
-  PARENT_ACCOUNT_COMPLETION_REQUEST: 'account/parentAccountCompletionRequest',
-  PARENT_ACCOUNT_COMPLETION_SUCCESS: 'account/parentAccountCompletionSuccess',
-  PARENT_ACCOUNT_COMPLETION_FAILURE: 'account/parentAccountCompletionFailure',
-  BABYSITTER_ACCOUNT_COMPLETION_REQUEST: 'account/babysitterAccountCompletionRequest',
-  BABYSITTER_ACCOUNT_COMPLETION_SUCCESS: 'account/babysitterAccountCompletionSuccess',
-  BABYSITTER_ACCOUNT_COMPLETION_FAILURE: 'account/babysitterAccountCompletionFailure',
+  ACCOUNT_COMPLETION_REQUEST: 'account/accountCompletionRequest',
+  ACCOUNT_COMPLETION_SUCCESS: 'account/accountCompletionSuccess',
+  ACCOUNT_COMPLETION_FAILURE: 'account/accountCompletionFailure',
 } as const
 
 export interface AuthState {

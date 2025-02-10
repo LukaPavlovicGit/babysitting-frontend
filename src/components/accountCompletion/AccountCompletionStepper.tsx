@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ParentAccountCompletionData } from '@/schemas/parentAccountCompletionSchema'
@@ -28,14 +29,8 @@ export default function AccountCompletionStepper() {
 
   return (
     <Box className="flex flex-col flex-grow w-full gap-12 justify-between items-center bg-[#4B545C] rounded-lg p-5">
-      {currentStep === -1 ? (
-        <UserTypeStep />
-      ) : (
-        <>
-          <AccountCompletionStepperHeader />
-          <AccountCompletionStepperContent />
-        </>
-      )}
+      <AccountCompletionStepperHeader />
+      <AccountCompletionStepperContent />
       <AccountCompletionStepperFooter />
     </Box>
   )
@@ -81,19 +76,20 @@ function AccountCompletionStepperHeader() {
 }
 
 function AccountCompletionStepperContent() {
-  const { currentStep, isParent, isBabysitter } = useAccountCompletionContext()
+  const { currentStep, isParent } = useAccountCompletionContext()
 
   return (
     <>
-      {isParent() && currentStep === 0 && <FamilyInformationStep />}
-      {isParent() && currentStep === 1 && <WhatDoYouNeedFromBabysitterStep />}
-      {isBabysitter() && currentStep === 0 && <BabySitterPersonalInformationStep />}
-      {isBabysitter() && currentStep === 1 && <BabySitterExperienceAndAvailabilityStep />}
+      {currentStep === 0 && <UserTypeStep />}
+      {currentStep === 1 && <PersonalInformationStep />}
+      {currentStep === 2 && <ScheduleSkillsNeedsStep />}
+      {currentStep === 3 && isParent && <FamilyInformationStep />}
     </>
   )
 }
 
 function AccountCompletionStepperFooter() {
+  const router = useRouter()
   const { currentStep, nextStep, prevStep, canProceed, getSteps, onComplete } = useAccountCompletionContext()
 
   const {
@@ -105,7 +101,12 @@ function AccountCompletionStepperFooter() {
   })
 
   const onSubmit = handleSubmit(async () => {
-    await onComplete()
+    try {
+      await onComplete()
+      router.push('/home')
+    } catch (error) {
+      console.error('Failed to complete account', error)
+    }
   })
 
   return (
@@ -128,7 +129,7 @@ function AccountCompletionStepperFooter() {
 }
 
 function UserTypeStep() {
-  const { setUserType } = useAccountCompletionContext()
+  const { updateAccountCompletionData } = useAccountCompletionContext()
 
   return (
     <div className="size-full flex flex-col gap-8 justify-center items-center">
@@ -144,7 +145,7 @@ function UserTypeStep() {
                 checkedIcon={<CheckBoxIcon />}
                 onChange={(e) => {
                   const value = e.target.value as UserTypeEnum
-                  setUserType(value)
+                  updateAccountCompletionData({ createdByRole: value })
                 }}
               />
             }
@@ -157,8 +158,8 @@ function UserTypeStep() {
   )
 }
 
-function BabySitterPersonalInformationStep() {
-  const { updateBabysitterFormData, babysitterFormData } = useAccountCompletionContext()
+function PersonalInformationStep() {
+  const { updateAccountCompletionData, accountCompletionData, isParent } = useAccountCompletionContext()
 
   return (
     <div className="flex flex-col">
@@ -166,17 +167,17 @@ function BabySitterPersonalInformationStep() {
         <div className="flex flex-col space-y-4 max-w-md">
           <div className="grid grid-cols-[140px_1fr] items-center gap-4">
             <span className="text-white font-semibold">First name</span>
-            <TextField onChange={(e) => updateBabysitterFormData({ firstName: e.target.value })} />
+            <TextField onChange={(e) => updateAccountCompletionData({ firstName: e.target.value })} />
           </div>
 
           <div className="grid grid-cols-[140px_1fr] items-center gap-4">
             <span className="text-white font-semibold">Postal code</span>
-            <TextField onChange={(e) => updateBabysitterFormData({ postalCode: Number(e.target.value) })} />
+            <TextField onChange={(e) => updateAccountCompletionData({ postalCode: Number(e.target.value) })} />
           </div>
 
           <div className="grid grid-cols-[140px_1fr] items-center gap-4">
             <span className="text-white font-semibold">Address name</span>
-            <TextField onChange={(e) => updateBabysitterFormData({ addressName: e.target.value })} />
+            <TextField onChange={(e) => updateAccountCompletionData({ addressName: e.target.value })} />
           </div>
 
           <div className="grid grid-cols-[140px_1fr] items-center gap-4">
@@ -200,13 +201,13 @@ function BabySitterPersonalInformationStep() {
               onChange={(e) => {
                 const value = parseFloat(e.target.value)
                 if (value >= -90 && value <= 90) {
-                  updateBabysitterFormData({ addressLatitude: value })
+                  updateAccountCompletionData({ addressLatitude: value })
                 }
               }}
               onBlur={(e) => {
                 const value = parseFloat(e.target.value)
-                if (value < -90) updateBabysitterFormData({ addressLatitude: -90 })
-                if (value > 90) updateBabysitterFormData({ addressLatitude: 90 })
+                if (value < -90) updateAccountCompletionData({ addressLatitude: -90 })
+                if (value > 90) updateAccountCompletionData({ addressLatitude: 90 })
               }}
               placeholder="Enter latitude (-90 to 90)"
             />
@@ -233,13 +234,13 @@ function BabySitterPersonalInformationStep() {
               onChange={(e) => {
                 const value = parseFloat(e.target.value)
                 if (value >= -180 && value <= 180) {
-                  updateBabysitterFormData({ addressLongitude: value })
+                  updateAccountCompletionData({ addressLongitude: value })
                 }
               }}
               onBlur={(e) => {
                 const value = parseFloat(e.target.value)
-                if (value < -180) updateBabysitterFormData({ addressLongitude: -180 })
-                if (value > 180) updateBabysitterFormData({ addressLongitude: 180 })
+                if (value < -180) updateAccountCompletionData({ addressLongitude: -180 })
+                if (value > 180) updateAccountCompletionData({ addressLongitude: 180 })
               }}
               placeholder="Enter longitude (-180 to 180)"
             />
@@ -247,7 +248,9 @@ function BabySitterPersonalInformationStep() {
         </div>
         <div className="flex flex-col gap-16 justify-start">
           <div className="grid grid-cols-[140px_1fr] items-start gap-4">
-            <span className="text-white font-semibold pt-1">Speaking languages:</span>
+            <span className="text-white font-semibold pt-1">
+              {isParent ? 'Family speaking languages' : 'Speaking languages'}
+            </span>
             <div>
               <RadioGroup name="speakingLanguages">
                 <div className="grid grid-cols-3">
@@ -259,11 +262,11 @@ function BabySitterPersonalInformationStep() {
                         <Checkbox
                           icon={<CheckBoxOutlineBlankIcon />}
                           checkedIcon={<CheckBoxIcon />}
-                          checked={babysitterFormData.speakingLanguages?.includes(language) || false}
+                          checked={accountCompletionData.speakingLanguages?.includes(language) || false}
                           onChange={(e) => {
-                            const currentLanguages = babysitterFormData.speakingLanguages || []
+                            const currentLanguages = accountCompletionData.speakingLanguages || []
                             const value = e.target.value as LanguagesEnum
-                            updateBabysitterFormData({
+                            updateAccountCompletionData({
                               speakingLanguages: currentLanguages.includes(value)
                                 ? currentLanguages.filter((lang) => lang !== value)
                                 : [...currentLanguages, value],
@@ -279,55 +282,22 @@ function BabySitterPersonalInformationStep() {
               </RadioGroup>
             </div>
           </div>
-          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-            <span className="text-white font-semibold">Skills:</span>
-            <div>
-              <RadioGroup name="skills">
-                <div className="grid grid-rows-2">
-                  {Object.values(SkillsEnum).map((skill) => (
-                    <FormControlLabel
-                      key={skill}
-                      value={skill}
-                      control={
-                        <Checkbox
-                          icon={<CheckBoxOutlineBlankIcon />}
-                          checkedIcon={<CheckBoxIcon />}
-                          checked={babysitterFormData.skills?.includes(skill) || false}
-                          onChange={(e) => {
-                            const currentSkills = babysitterFormData.skills || []
-                            const value = e.target.value as SkillsEnum
-
-                            updateBabysitterFormData({
-                              skills: currentSkills.includes(value)
-                                ? currentSkills.filter((char) => char !== value)
-                                : [...currentSkills, value],
-                            })
-                          }}
-                        />
-                      }
-                      label={skill}
-                      className="text-white"
-                    />
-                  ))}
-                </div>
-              </RadioGroup>
-            </div>
-          </div>
         </div>
       </div>
     </div>
   )
 }
 
-function BabySitterExperienceAndAvailabilityStep() {
-  const { updateBabysitterFormData, babysitterFormData } = useAccountCompletionContext()
+function ScheduleSkillsNeedsStep() {
+  const { updateAccountCompletionData, accountCompletionData, isParent } = useAccountCompletionContext()
+
   const timeSlots = ['Morning', 'Afternoon', 'Evening', 'Night']
   const days = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
   const daysFull = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-col gap-24">
+    <div className="flex flex-col w-full">
+      <div className="flex flex-col gap-16 w-full">
         <div className="flex flex-col space-y-0 max-w-md w-full">
           <div className="grid grid-cols-[140px_1fr] items-center gap-4">
             <span className="text-white font-semibold">Currency</span>
@@ -342,9 +312,9 @@ function BabySitterExperienceAndAvailabilityStep() {
                         <Checkbox
                           icon={<CheckBoxOutlineBlankIcon />}
                           checkedIcon={<CheckBoxIcon />}
-                          checked={babysitterFormData.currency === currency}
+                          checked={accountCompletionData.currency === currency}
                           onChange={(e) => {
-                            updateBabysitterFormData({
+                            updateAccountCompletionData({
                               currency: e.target.value as CurrencyEnum,
                             })
                           }}
@@ -366,7 +336,7 @@ function BabySitterExperienceAndAvailabilityStep() {
                 min: 0,
                 step: 0.01,
               }}
-              onChange={(e) => updateBabysitterFormData({ rate: Number(e.target.value) })}
+              onChange={(e) => updateAccountCompletionData({ rate: Number(e.target.value) })}
               sx={{
                 '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
                   WebkitAppearance: 'none',
@@ -381,7 +351,7 @@ function BabySitterExperienceAndAvailabilityStep() {
         </div>
         <div className="flex flex-col space-y-4 max-w-md">
           <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-            <span className="text-white font-semibold">Job location</span>
+            <span className="text-white font-semibold">Prefereble job location</span>
             <div>
               <RadioGroup name="jobLocation">
                 <div className="grid grid-rows-2">
@@ -393,9 +363,9 @@ function BabySitterExperienceAndAvailabilityStep() {
                         <Checkbox
                           icon={<CheckBoxOutlineBlankIcon />}
                           checkedIcon={<CheckBoxIcon />}
-                          checked={babysitterFormData.jobLocation === jobLocation}
+                          checked={accountCompletionData.jobLocation === jobLocation}
                           onChange={(e) => {
-                            updateBabysitterFormData({
+                            updateAccountCompletionData({
                               jobLocation: e.target.value as JobLocationEnum,
                             })
                           }}
@@ -410,9 +380,49 @@ function BabySitterExperienceAndAvailabilityStep() {
             </div>
           </div>
         </div>
+        <div className="flex flex-col space-y-4 max-w-md">
+          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
+            <span className="text-white font-semibold">
+              {isParent ? 'What skills do you need from babysitter?' : 'Skills'}
+            </span>
+            <div>
+              <RadioGroup name="skills">
+                <div className="grid grid-rows-2">
+                  {Object.values(SkillsEnum).map((skill) => (
+                    <FormControlLabel
+                      key={skill}
+                      value={skill}
+                      control={
+                        <Checkbox
+                          icon={<CheckBoxOutlineBlankIcon />}
+                          checkedIcon={<CheckBoxIcon />}
+                          checked={accountCompletionData.skills?.includes(skill) || false}
+                          onChange={(e) => {
+                            const currentSkills = accountCompletionData.skills || []
+                            const value = e.target.value as SkillsEnum
+
+                            updateAccountCompletionData({
+                              skills: currentSkills.includes(value)
+                                ? currentSkills.filter((char) => char !== value)
+                                : [...currentSkills, value],
+                            })
+                          }}
+                        />
+                      }
+                      label={skill}
+                      className="text-white"
+                    />
+                  ))}
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+        </div>
         <div className="flex flex-col space-y-4 w-full">
           <div className="flex flex-col gap-4 w-full items-start">
-            <span className="text-white font-semibold">When do you need babysitter?</span>
+            <span className="text-white font-semibold">
+              {isParent ? 'When do you need babysitter?' : 'Available hours'}
+            </span>
             <div className="w-full">
               <div className="grid grid-cols-8 gap-4">
                 {/* Empty cell for top-left corner */}
@@ -426,25 +436,25 @@ function BabySitterExperienceAndAvailabilityStep() {
                 ))}
 
                 {/* Time slots and checkboxes */}
-                {timeSlots.map((timeSlot, rowIndex) => (
+                {timeSlots.map((timeSlot) => (
                   <React.Fragment key={timeSlot}>
                     <div className="text-white text-left">{timeSlot}</div>
 
-                    {daysFull.map((day, colIndex) => (
+                    {daysFull.map((day) => (
                       <div key={`${day}${timeSlot}`} className="flex justify-center items-center">
                         <Checkbox
                           checked={
-                            babysitterFormData.schedule?.[
-                              `${day}${timeSlot}`.toLowerCase() as keyof typeof babysitterFormData.schedule
+                            accountCompletionData.schedule?.[
+                              `${day}${timeSlot}`.toLowerCase() as keyof typeof accountCompletionData.schedule
                             ] || false
                           }
                           onChange={(e) => {
-                            const key = `${day}${timeSlot}`.toLowerCase() as keyof typeof babysitterFormData.schedule
-                            updateBabysitterFormData({
+                            const key = `${day}${timeSlot}`.toLowerCase() as keyof typeof accountCompletionData.schedule
+                            updateAccountCompletionData({
                               schedule: {
-                                ...babysitterFormData.schedule,
+                                ...accountCompletionData.schedule,
                                 [key]: e.target.checked,
-                              } as typeof babysitterFormData.schedule,
+                              } as typeof accountCompletionData.schedule,
                             })
                           }}
                         />
@@ -462,93 +472,11 @@ function BabySitterExperienceAndAvailabilityStep() {
 }
 
 function FamilyInformationStep() {
-  const { updateParentFormData, parentFormData } = useAccountCompletionContext()
+  const { updateAccountCompletionData, accountCompletionData } = useAccountCompletionContext()
 
   return (
     <div className="flex flex-col">
       <div className="flex flex-col gap-24">
-        <div className="flex flex-col space-y-4 max-w-md">
-          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-            <span className="text-white font-semibold">First name</span>
-            <TextField onChange={(e) => updateParentFormData({ firstName: e.target.value })} />
-          </div>
-
-          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-            <span className="text-white font-semibold">Postal code</span>
-            <TextField onChange={(e) => updateParentFormData({ postalCode: Number(e.target.value) })} />
-          </div>
-
-          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-            <span className="text-white font-semibold">Address name</span>
-            <TextField onChange={(e) => updateParentFormData({ addressName: e.target.value })} />
-          </div>
-
-          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-            <span className="text-white font-semibold">Address latitude</span>
-            <TextField
-              type="number"
-              sx={{
-                '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
-                  WebkitAppearance: 'none',
-                  margin: 0,
-                },
-                '& input[type=number]': {
-                  MozAppearance: 'textfield',
-                },
-              }}
-              inputProps={{
-                min: -90,
-                max: 90,
-                step: 'any',
-              }}
-              onChange={(e) => {
-                const value = parseFloat(e.target.value)
-                if (value >= -90 && value <= 90) {
-                  updateParentFormData({ addressLatitude: value })
-                }
-              }}
-              onBlur={(e) => {
-                const value = parseFloat(e.target.value)
-                if (value < -90) updateParentFormData({ addressLatitude: -90 })
-                if (value > 90) updateParentFormData({ addressLatitude: 90 })
-              }}
-              placeholder="Enter latitude (-90 to 90)"
-            />
-          </div>
-
-          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-            <span className="text-white font-semibold">Address longitude</span>
-            <TextField
-              type="number"
-              sx={{
-                '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
-                  WebkitAppearance: 'none',
-                  margin: 0,
-                },
-                '& input[type=number]': {
-                  MozAppearance: 'textfield',
-                },
-              }}
-              inputProps={{
-                min: -180,
-                max: 180,
-                step: 'any',
-              }}
-              onChange={(e) => {
-                const value = parseFloat(e.target.value)
-                if (value >= -180 && value <= 180) {
-                  updateParentFormData({ addressLongitude: value })
-                }
-              }}
-              onBlur={(e) => {
-                const value = parseFloat(e.target.value)
-                if (value < -180) updateParentFormData({ addressLongitude: -180 })
-                if (value > 180) updateParentFormData({ addressLongitude: 180 })
-              }}
-              placeholder="Enter longitude (-180 to 180)"
-            />
-          </div>
-        </div>
         <div className="flex flex-col space-y-4 max-w-md">
           <div className="grid grid-cols-[140px_1fr] items-center gap-4">
             <span className="text-white font-semibold">Number of children</span>
@@ -562,46 +490,13 @@ function FamilyInformationStep() {
               onChange={(e) => {
                 const value = Number(e.target.value)
                 if (value >= 1 && value <= 10) {
-                  updateParentFormData({ numberOfChildren: value })
+                  updateAccountCompletionData({ numberOfChildren: value })
                 }
               }}
             />
           </div>
         </div>
         <div className="flex flex-col gap-16 justify-start">
-          <div className="grid grid-cols-[140px_1fr] items-start gap-4">
-            <span className="text-white font-semibold pt-1">Family speaking languages:</span>
-            <div>
-              <RadioGroup name="familySpeakingLanguages">
-                <div className="grid grid-cols-3">
-                  {Object.values(LanguagesEnum).map((language) => (
-                    <FormControlLabel
-                      key={language}
-                      value={language}
-                      control={
-                        <Checkbox
-                          icon={<CheckBoxOutlineBlankIcon />}
-                          checkedIcon={<CheckBoxIcon />}
-                          checked={parentFormData.familySpeakingLanguages?.includes(language) || false}
-                          onChange={(e) => {
-                            const currentLanguages = parentFormData.familySpeakingLanguages || []
-                            const value = e.target.value as LanguagesEnum
-                            updateParentFormData({
-                              familySpeakingLanguages: currentLanguages.includes(value)
-                                ? currentLanguages.filter((lang) => lang !== value)
-                                : [...currentLanguages, value],
-                            })
-                          }}
-                        />
-                      }
-                      label={language}
-                      className="text-white"
-                    />
-                  ))}
-                </div>
-              </RadioGroup>
-            </div>
-          </div>
           <div className="grid grid-cols-[140px_1fr] items-start gap-4">
             <span className="text-white font-semibold pt-1">Choose children age categories:</span>
             <div>
@@ -615,11 +510,11 @@ function FamilyInformationStep() {
                         <Checkbox
                           icon={<CheckBoxOutlineBlankIcon />}
                           checkedIcon={<CheckBoxIcon />}
-                          checked={parentFormData.childrenAgeCategories?.includes(ageCategory) || false}
+                          checked={accountCompletionData.childrenAgeCategories?.includes(ageCategory) || false}
                           onChange={(e) => {
-                            const currentAgeCategories = parentFormData.childrenAgeCategories || []
+                            const currentAgeCategories = accountCompletionData.childrenAgeCategories || []
                             const value = e.target.value as AgeCategoryEnum
-                            updateParentFormData({
+                            updateAccountCompletionData({
                               childrenAgeCategories: currentAgeCategories.includes(value)
                                 ? currentAgeCategories.filter((age) => age !== value)
                                 : [...currentAgeCategories, value],
@@ -648,12 +543,12 @@ function FamilyInformationStep() {
                         <Checkbox
                           icon={<CheckBoxOutlineBlankIcon />}
                           checkedIcon={<CheckBoxIcon />}
-                          checked={parentFormData.childrenCharacteristics?.includes(characteristic) || false}
+                          checked={accountCompletionData.childrenCharacteristics?.includes(characteristic) || false}
                           onChange={(e) => {
-                            const currentCharacteristics = parentFormData.childrenCharacteristics || []
+                            const currentCharacteristics = accountCompletionData.childrenCharacteristics || []
                             const value = e.target.value as CharacteristicsEnum
 
-                            updateParentFormData({
+                            updateAccountCompletionData({
                               childrenCharacteristics: currentCharacteristics.includes(value)
                                 ? currentCharacteristics.filter((char) => char !== value)
                                 : [...currentCharacteristics, value],
@@ -677,187 +572,8 @@ function FamilyInformationStep() {
               className="w-full p-2 rounded bg-gray-700 text-white resize-none overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
               rows={4}
               placeholder="Enter family description..."
-              onChange={(e) => updateParentFormData({ familyDescription: e.target.value })}
+              onChange={(e) => updateAccountCompletionData({ familyDescription: e.target.value })}
             />
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function WhatDoYouNeedFromBabysitterStep() {
-  const { updateParentFormData, parentFormData } = useAccountCompletionContext()
-
-  const timeSlots = ['Morning', 'Afternoon', 'Evening', 'Night']
-  const days = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
-  const daysFull = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-
-  return (
-    <div className="flex flex-col w-full">
-      <div className="flex flex-col gap-16 w-full">
-        <div className="flex flex-col space-y-0 max-w-md w-full">
-          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-            <span className="text-white font-semibold">Currency</span>
-            <div>
-              <RadioGroup name="familySpeakingLanguages">
-                <div className="grid grid-cols-3">
-                  {Object.values(CurrencyEnum).map((currency) => (
-                    <FormControlLabel
-                      key={currency}
-                      value={currency}
-                      control={
-                        <Checkbox
-                          icon={<CheckBoxOutlineBlankIcon />}
-                          checkedIcon={<CheckBoxIcon />}
-                          checked={parentFormData.currency === currency}
-                          onChange={(e) => {
-                            updateParentFormData({
-                              currency: e.target.value as CurrencyEnum,
-                            })
-                          }}
-                        />
-                      }
-                      label={currency}
-                      className="text-white"
-                    />
-                  ))}
-                </div>
-              </RadioGroup>
-            </div>
-          </div>
-          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-            <span className="text-white font-semibold">Rate</span>
-            <TextField
-              type="number"
-              inputProps={{
-                min: 0,
-                step: 0.01,
-              }}
-              onChange={(e) => updateParentFormData({ rate: Number(e.target.value) })}
-              sx={{
-                '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
-                  WebkitAppearance: 'none',
-                  margin: 0,
-                },
-                '& input[type=number]': {
-                  MozAppearance: 'textfield',
-                },
-              }}
-            />
-          </div>
-        </div>
-        <div className="flex flex-col space-y-4 max-w-md">
-          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-            <span className="text-white font-semibold">Job location</span>
-            <div>
-              <RadioGroup name="jobLocation">
-                <div className="grid grid-rows-2">
-                  {Object.values(JobLocationEnum).map((jobLocation) => (
-                    <FormControlLabel
-                      key={jobLocation}
-                      value={jobLocation}
-                      control={
-                        <Checkbox
-                          icon={<CheckBoxOutlineBlankIcon />}
-                          checkedIcon={<CheckBoxIcon />}
-                          checked={parentFormData.jobLocation === jobLocation}
-                          onChange={(e) => {
-                            updateParentFormData({
-                              jobLocation: e.target.value as JobLocationEnum,
-                            })
-                          }}
-                        />
-                      }
-                      label={jobLocation}
-                      className="text-white"
-                    />
-                  ))}
-                </div>
-              </RadioGroup>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col space-y-4 max-w-md">
-          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-            <span className="text-white font-semibold">What are the specific skills you need from babysitter?</span>
-            <div>
-              <RadioGroup name="skills">
-                <div className="grid grid-rows-2">
-                  {Object.values(SkillsEnum).map((skill) => (
-                    <FormControlLabel
-                      key={skill}
-                      value={skill}
-                      control={
-                        <Checkbox
-                          icon={<CheckBoxOutlineBlankIcon />}
-                          checkedIcon={<CheckBoxIcon />}
-                          checked={parentFormData.preferebleSkills?.includes(skill) || false}
-                          onChange={(e) => {
-                            const currentSkills = parentFormData.preferebleSkills || []
-                            const value = e.target.value as SkillsEnum
-
-                            updateParentFormData({
-                              preferebleSkills: currentSkills.includes(value)
-                                ? currentSkills.filter((char) => char !== value)
-                                : [...currentSkills, value],
-                            })
-                          }}
-                        />
-                      }
-                      label={skill}
-                      className="text-white"
-                    />
-                  ))}
-                </div>
-              </RadioGroup>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col space-y-4 w-full">
-          <div className="flex flex-col gap-4 w-full items-start">
-            <span className="text-white font-semibold">When do you need babysitter?</span>
-            <div className="w-full">
-              <div className="grid grid-cols-8 gap-4">
-                {/* Empty cell for top-left corner */}
-                <div className=""></div>
-
-                {/* Days header */}
-                {days.map((day) => (
-                  <div key={day} className="text-white text-center font-medium">
-                    {day}
-                  </div>
-                ))}
-
-                {/* Time slots and checkboxes */}
-                {timeSlots.map((timeSlot, rowIndex) => (
-                  <React.Fragment key={timeSlot}>
-                    <div className="text-white text-left">{timeSlot}</div>
-
-                    {daysFull.map((day, colIndex) => (
-                      <div key={`${day}${timeSlot}`} className="flex justify-center items-center">
-                        <Checkbox
-                          checked={
-                            parentFormData.schedule?.[
-                              `${day}${timeSlot}`.toLowerCase() as keyof typeof parentFormData.schedule
-                            ] || false
-                          }
-                          onChange={(e) => {
-                            const key = `${day}${timeSlot}`.toLowerCase() as keyof typeof parentFormData.schedule
-                            updateParentFormData({
-                              schedule: {
-                                ...parentFormData.schedule,
-                                [key]: e.target.checked,
-                              } as typeof parentFormData.schedule,
-                            })
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>

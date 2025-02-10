@@ -34,8 +34,7 @@ export const accountReducer = (state: AuthState = initialState, action: AccountA
         ...state,
         isLoggedIn: false,
       }
-    case ACCOUNT_TYPES.PARENT_ACCOUNT_COMPLETION_REQUEST:
-    case ACCOUNT_TYPES.BABYSITTER_ACCOUNT_COMPLETION_REQUEST:
+    case ACCOUNT_TYPES.ACCOUNT_COMPLETION_REQUEST:
       return {
         ...state,
         isAccountCompleted: false,
@@ -52,8 +51,7 @@ export const accountReducer = (state: AuthState = initialState, action: AccountA
         ...state,
         isLoggedIn: false,
       }
-    case ACCOUNT_TYPES.PARENT_ACCOUNT_COMPLETION_SUCCESS:
-    case ACCOUNT_TYPES.BABYSITTER_ACCOUNT_COMPLETION_SUCCESS:
+    case ACCOUNT_TYPES.ACCOUNT_COMPLETION_SUCCESS:
       return {
         ...state,
         isAccountCompleted: true,
@@ -65,8 +63,7 @@ export const accountReducer = (state: AuthState = initialState, action: AccountA
         ...state,
         isLoggedIn: false,
       }
-    case ACCOUNT_TYPES.BABYSITTER_ACCOUNT_COMPLETION_FAILURE:
-    case ACCOUNT_TYPES.PARENT_ACCOUNT_COMPLETION_FAILURE:
+    case ACCOUNT_TYPES.ACCOUNT_COMPLETION_FAILURE:
       return {
         ...state,
         isAccountCompleted: false,

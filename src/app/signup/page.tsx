@@ -22,8 +22,8 @@ function SignupPage() {
     resolver: zodResolver(signupSchema),
   })
 
-  const onSubmit = handleSubmit((data) => {
-    dispatch(accountActions.signup(data))
+  const onSubmit = handleSubmit(async (data) => {
+    await dispatch(accountActions.signup(data))
     router.push('/login')
   })
 
