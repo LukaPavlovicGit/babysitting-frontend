@@ -2,8 +2,12 @@ import { ApiConfig, Environment, FeatureFlags } from './types'
 import { API_CONFIG } from './config'
 import { ENDPOINTS } from './endpoints'
 import { RateLimiter } from './rateLimiter'
-import { ParentAccountCompletionData } from '@/schemas/parentAccountCompletionSchema'
-import { BabysitterAccountCompletionData } from '@/schemas/babysitterAccountCompletionSchema'
+import { GetAccountsByCriteriaProps } from '@/hooks/useGetAccountsByCriteria'
+import { accountSelectors } from '@/redux/auth/account.selectors'
+import { store } from '@/redux/store/store'
+import { RootReducerState } from '@/redux/store/rootReducer'
+import { AccountCompletionData } from '@/schemas/accountCompletionSchena'
+import { getUserIdFromJwt } from '@/utils/jwtDecoder'
 
 class Api {
   private config: ApiConfig
@@ -40,6 +44,8 @@ class Api {
   }
 
   get endpoints() {
+    const jwt = accountSelectors.getToken(store.getState() as RootReducerState)
+
     return {
       account: {
         login: (data: { email: string; password: string; rememberMe?: boolean }) =>
@@ -56,18 +62,11 @@ class Api {
             body: JSON.stringify(data),
           }),
 
-        completeParentAccount: (data: ParentAccountCompletionData) =>
-          this.handleRequest(ENDPOINTS.account.completeParentAccount, {
+        completeAccount: (data: AccountCompletionData) =>
+          this.handleRequest(ENDPOINTS.account.completeAccount, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-          }),
-
-        completeBabysitterAccount: (data: BabysitterAccountCompletionData) =>
-          this.handleRequest(ENDPOINTS.account.completeBabysitterAccount, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwt}` },
+            body: JSON.stringify({ ...data, createdByUserId: getUserIdFromJwt() }),
           }),
 
         logout: () => this.handleRequest(ENDPOINTS.account.logout),
@@ -80,6 +79,13 @@ class Api {
           this.handleRequest(ENDPOINTS.account.getByEmail(data.email), {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
+          }),
+
+        getByCriteria: (data: GetAccountsByCriteriaProps) =>
+          this.handleRequest(ENDPOINTS.account.getByCriteria, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwt}` },
+            body: JSON.stringify(data),
           }),
 
         update: () => this.handleRequest(ENDPOINTS.account.update),
