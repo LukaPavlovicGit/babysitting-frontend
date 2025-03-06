@@ -26,7 +26,6 @@ function LoginOrSignupPage() {
       router.push('/login')
     } catch (error) {
       router.push('/signup')
-      console.error('Login failed:', error)
     }
   })
 

@@ -23,8 +23,10 @@ function SignupPage() {
   })
 
   const onSubmit = handleSubmit(async (data) => {
-    await dispatch(accountActions.signup(data))
-    router.push('/login')
+    try {
+      await dispatch(accountActions.signup(data))
+      router.push('/login')
+    } catch (error) {}
   })
 
   return (
