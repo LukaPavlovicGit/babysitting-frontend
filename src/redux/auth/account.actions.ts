@@ -144,11 +144,15 @@ export const accountActions = {
         dispatch(accountActions.loginOrSignupRequest())
         const response = await api.endpoints.account.getByEmail(loginOrSignupData)
 
-        if (!response.ok) throw new Error('Failed to check email')
-
-        const data = (await response.json()) as LoginOrSignupResponse
-        dispatch(accountActions.loginOrSignupSuccess(data))
-        return data
+        if (response.status === 200) {
+          const data = (await response.json()) as LoginOrSignupResponse
+          dispatch(accountActions.loginOrSignupSuccess(data))
+          return data
+        } else if (response.status === 404) {
+          throw new Error('User not found')
+        } else {
+          throw new Error('Failed to check email')
+        }
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Login or signup failed'
         dispatch(accountActions.loginOrSignupFailure(errorMessage))
@@ -163,11 +167,15 @@ export const accountActions = {
         dispatch(accountActions.loginRequest())
         const response = await api.endpoints.account.login(loginData)
 
-        if (!response.ok) throw new Error('Failed to login')
-
-        const data = (await response.json()) as LoginResponse
-        dispatch(accountActions.loginSuccess(data))
-        return data
+        if (response.status === 200) {
+          const data = (await response.json()) as LoginResponse
+          dispatch(accountActions.loginSuccess(data))
+          return data
+        } else if (response.status === 404) {
+          throw new Error('User not found')
+        } else {
+          throw new Error('Failed to login')
+        }
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Login failed'
         dispatch(accountActions.loginFailure(errorMessage))
@@ -182,11 +190,15 @@ export const accountActions = {
         dispatch(accountActions.signupRequest())
         const response = await api.endpoints.account.signup(signupData)
 
-        if (!response.ok) throw new Error('Failed to signup')
-
-        const data = (await response.json()) as SignupResponse
-        dispatch(accountActions.signupSuccess(data))
-        return data
+        if (response.status === 200) {
+          const data = (await response.json()) as SignupResponse
+          dispatch(accountActions.signupSuccess(data))
+          return data
+        } else if (response.status === 409) {
+          throw new Error('User already exists')
+        } else {
+          throw new Error('Failed to signup')
+        }
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Registration failed'
         dispatch(accountActions.signupFailure(errorMessage))
@@ -197,14 +209,20 @@ export const accountActions = {
 
   completeAccount: (accountCompletionData: AccountCompletionData) => {
     return async (dispatch: Dispatch<AccountActionTypes>) => {
-      dispatch(accountActions.accountCompletionRequest())
-      const response = await api.endpoints.account.completeAccount(accountCompletionData)
+      try {
+        dispatch(accountActions.accountCompletionRequest())
+        const response = await api.endpoints.account.completeAccount(accountCompletionData)
 
-      if (!response.ok) throw new Error('Failed to complete account')
+        if (!response.ok) throw new Error('Failed to complete account')
 
-      const data = (await response.json()) as AccountCompletionResponse
-      dispatch(accountActions.accountCompletionSuccess(data))
-      return data
+        const data = (await response.json()) as AccountCompletionResponse
+        dispatch(accountActions.accountCompletionSuccess(data))
+        return data
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to complete account'
+        dispatch(accountActions.accountCompletionFailure(errorMessage))
+        throw error
+      }
     }
   },
 }
