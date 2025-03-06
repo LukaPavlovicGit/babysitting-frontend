@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux'
 import { persistReducer } from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
+import storage from '@/utils/customStorage'
 import { accountReducer } from '@/redux/auth/account.reducers'
 
 const userPersistConfig = {
   key: 'auth',
-  storage: storage,
+  storage,
   // without whitelist, it will persist all the state
   // whitelist: ['token', 'firstName', 'email', 'isAccountCompleted', 'isLoggedIn'],
 }
