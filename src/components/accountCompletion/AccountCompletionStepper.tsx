@@ -23,6 +23,10 @@ import { CharacteristicsEnum } from '@/types/enums/CharacteristicsEnum'
 import { CurrencyEnum } from '@/types/enums/CurrencyEnum'
 import { JobLocationEnum } from '@/types/enums/JobLocationEnum'
 import { SkillsEnum } from '@/types/enums/SkillsEnum'
+import { AppDispatch } from '@/redux/store/store'
+import { useDispatch } from 'react-redux'
+import { accountActions } from '@/redux/auth/account.actions'
+import { AccountCompletionData } from '@/schemas/accountCompletionSchena'
 
 export default function AccountCompletionStepper() {
   const { currentStep } = useAccountCompletionContext()
@@ -85,46 +89,6 @@ function AccountCompletionStepperContent() {
       {currentStep === 2 && <ScheduleSkillsNeedsStep />}
       {currentStep === 3 && isParent && <FamilyInformationStep />}
     </>
-  )
-}
-
-function AccountCompletionStepperFooter() {
-  const router = useRouter()
-  const { currentStep, nextStep, prevStep, canProceed, getSteps, onComplete } = useAccountCompletionContext()
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ParentAccountCompletionData>({
-    resolver: zodResolver(parentAccountCompletionSchema),
-  })
-
-  const onSubmit = handleSubmit(async () => {
-    try {
-      await onComplete()
-      router.push('/home')
-    } catch (error) {
-      console.error('Failed to complete account', error)
-    }
-  })
-
-  return (
-    <div className="flex w-full justify-between pt-4">
-      <Button onClick={prevStep} disabled={currentStep === -1} variant="contained" color="info">
-        Back
-      </Button>
-
-      {currentStep === -1 || currentStep < getSteps().length - 1 ? (
-        <Button onClick={nextStep} disabled={!canProceed} variant="contained" color="info">
-          Next
-        </Button>
-      ) : (
-        <Button onClick={onSubmit} disabled={!canProceed} variant="contained" color="success">
-          Complete
-        </Button>
-      )}
-    </div>
   )
 }
 
@@ -577,6 +541,47 @@ function FamilyInformationStep() {
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+function AccountCompletionStepperFooter() {
+  const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter()
+  const { currentStep, nextStep, prevStep, canProceed, getSteps, accountCompletionData } = useAccountCompletionContext()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ParentAccountCompletionData>({
+    resolver: zodResolver(parentAccountCompletionSchema),
+  })
+
+  const onSubmit = async () => {
+    try {
+      await dispatch(accountActions.completeAccount(accountCompletionData as AccountCompletionData))
+      router.push('/home')
+    } catch (error) {
+      console.error('Failed to complete account', error)
+    }
+  }
+
+  return (
+    <div className="flex w-full justify-between pt-4">
+      <Button onClick={prevStep} disabled={currentStep === -1} variant="contained" color="info">
+        Back
+      </Button>
+
+      {currentStep === -1 || currentStep < getSteps().length - 1 ? (
+        <Button onClick={nextStep} disabled={!canProceed} variant="contained" color="info">
+          Next
+        </Button>
+      ) : (
+        <Button onClick={onSubmit} disabled={!canProceed} variant="contained" color="success">
+          Complete
+        </Button>
+      )}
     </div>
   )
 }

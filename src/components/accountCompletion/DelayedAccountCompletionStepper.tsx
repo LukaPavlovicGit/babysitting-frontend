@@ -21,13 +21,7 @@ export default function DelayedAccountCompletionStepper() {
   }, [])
 
   useEffect(() => {
-    console.log('pathname: ' + pathname)
-    console.log('isLoggedIn: ' + isLoggedIn)
-    console.log('isAccountComplete: ' + isAccountCompleted)
-
     const doNotShow = !isLoggedIn || isAccountCompleted || /^\/*(login|signup)/.test(pathname)
-
-    console.log('doNotShow: ' + doNotShow)
 
     if (doNotShow) {
       setShow(false)

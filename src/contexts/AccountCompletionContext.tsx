@@ -3,10 +3,6 @@ import { z } from 'zod'
 import { accountCompletionSchema, AccountCompletionData } from '@/schemas/accountCompletionSchena'
 import { UserTypeEnum } from '@/types/enums/UserTypeEnum'
 
-import { accountActions } from '@/redux/auth/account.actions'
-import { AppDispatch } from '@/redux/store/store'
-import { useDispatch } from 'react-redux'
-
 interface AccountCompletionContextType {
   currentStep: number
   accountCompletionData: Partial<AccountCompletionData>
@@ -18,7 +14,6 @@ interface AccountCompletionContextType {
   isBabysitter: boolean
   canProceed: boolean
   errors: z.ZodError | null
-  onComplete: () => Promise<void>
 }
 
 const AccountCompletionContext = createContext<AccountCompletionContextType | undefined>(undefined)
@@ -83,7 +78,6 @@ const stepsConfig = {
 }
 
 export function AccountCompletionProvider({ children }: { children: React.ReactNode }) {
-  const dispatch = useDispatch<AppDispatch>()
   const [currentStep, setCurrentStep] = useState(0)
   const [accountCompletionData, setAccountCompletionData] = useState<Partial<AccountCompletionData>>({
     createdByRole: UserTypeEnum.PARENT,
@@ -134,11 +128,6 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
     return stepsConfig[accountCompletionData.createdByRole!].stepsTitles
   }
 
-  const onComplete = () => {
-    dispatch(accountActions.completeAccount(accountCompletionData as AccountCompletionData))
-    return Promise.resolve()
-  }
-
   useEffect(() => {
     validateCurrentStep()
   }, [validateCurrentStep])
@@ -154,7 +143,6 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
     isBabysitter: accountCompletionData.createdByRole === UserTypeEnum.BABYSITTER,
     canProceed,
     errors,
-    onComplete,
   }
 
   return <AccountCompletionContext.Provider value={value}>{children}</AccountCompletionContext.Provider>
