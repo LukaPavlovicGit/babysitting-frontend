@@ -1,9 +1,9 @@
-import { RootReducerState } from '@/redux/store/rootReducer'
+import { AccountState } from '@/redux/store/store'
 
 export const accountSelectors = {
-  getToken: (state: RootReducerState) => state.account.token,
-  getIsLoggedIn: (state: RootReducerState) => state.account.isLoggedIn,
-  getIsAccountCompleted: (state: RootReducerState) => state.account.isAccountCompleted,
-  getFirstName: (state: RootReducerState) => state.account.firstName,
-  getEmail: (state: RootReducerState) => state.account.email,
+  getToken: (state: AccountState) => state.token,
+  getIsLoggedIn: (state: AccountState) => state.isLoggedIn,
+  getIsAccountCompleted: (state: AccountState) => state.isAccountCompleted,
+  getFirstName: (state: AccountState) => state.firstName,
+  getEmail: (state: AccountState) => state.email,
 }

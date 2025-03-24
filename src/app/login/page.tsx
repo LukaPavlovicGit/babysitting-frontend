@@ -3,7 +3,6 @@
 import { useDispatch } from 'react-redux'
 import { AppDispatch, store } from '@/redux/store/store'
 import { accountSelectors } from '@/redux/auth/account.selectors'
-import { RootReducerState } from '@/redux/store/rootReducer'
 import { accountActions } from '@/redux/auth/account.actions'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -16,8 +15,8 @@ import Icon from '@/components/Icon'
 function LoginPage() {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
-  const email = accountSelectors.getEmail(store.getState() as RootReducerState)
-  const firstName = accountSelectors.getFirstName(store.getState() as RootReducerState)
+  const email = accountSelectors.getEmail(store.getState())
+  const firstName = accountSelectors.getFirstName(store.getState())
 
   const {
     register,

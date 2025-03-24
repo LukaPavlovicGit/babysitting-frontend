@@ -25,7 +25,12 @@ function LoginOrSignupPage() {
       await dispatch(accountActions.loginOrSignup(data))
       router.push('/login')
     } catch (error) {
-      router.push('/signup')
+      const errorMessage = error instanceof Error ? error.message : 'Login or signup failed'
+      if (errorMessage === 'User not found') {
+        router.push('/signup')
+      } else {
+        console.error(errorMessage)
+      }
     }
   })
 
