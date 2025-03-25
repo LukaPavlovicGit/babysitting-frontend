@@ -15,8 +15,8 @@ import Icon from '@/components/Icon'
 function LoginPage() {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
-  const email = accountSelectors.getEmail(store.getState())
-  const firstName = accountSelectors.getFirstName(store.getState())
+  const email = accountSelectors.getEmail(store.getState().account)
+  const firstName = accountSelectors.getFirstName(store.getState().account)
 
   const {
     register,
