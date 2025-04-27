@@ -3,12 +3,18 @@
 import { MapConfig } from '@/types/map'
 import dynamic from 'next/dynamic'
 import ProtectedRoute from '@/components/ProtectedRoute'
+import { useEffect } from 'react'
+import { selectors } from '@/redux/selectors'
+import { store } from '@/redux/store/store'
+
 const Map = dynamic(() => import('../../components/Map'), {
   loading: () => <p>Loading map...</p>,
   ssr: false,
 })
 
 export default function Home() {
+  useEffect(() => {})
+
   const mapConfig: MapConfig = {
     center: [43.898356, 20.352036],
     zoom: 13,

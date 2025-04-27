@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FormField from '@/components/FormField'
 import Icon from '@/components/Icon'
-import { accountActions } from '@/redux/auth/account.actions'
+import { accountActions } from '@/redux/actions'
 
 function SignupPage() {
   const dispatch = useDispatch<AppDispatch>()

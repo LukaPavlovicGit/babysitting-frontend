@@ -1,4 +1,4 @@
-export const ACCOUNT_TYPES = {
+export const EVENT_TYPES = {
   LOGIN_OR_SIGNUP_REQUEST: 'account/loginOrSignupRequest',
   LOGIN_OR_SIGNUP_SUCCESS: 'account/loginOrSignupSuccess',
   LOGIN_OR_SIGNUP_FAILURE: 'account/loginOrSignupFailure',
@@ -11,33 +11,7 @@ export const ACCOUNT_TYPES = {
   ACCOUNT_COMPLETION_REQUEST: 'account/accountCompletionRequest',
   ACCOUNT_COMPLETION_SUCCESS: 'account/accountCompletionSuccess',
   ACCOUNT_COMPLETION_FAILURE: 'account/accountCompletionFailure',
+  DATA_REQUEST: 'dataRequest',
+  DATA_SUCCESS: 'dataSuccess',
+  DATA_FAILURE: 'dataFailure',
 } as const
-
-export interface AuthState {
-  token: string | null
-  firstName: string | null
-  email: string | null
-  isAccountCompleted: boolean
-  isLoggedIn: boolean
-}
-
-export interface LoginOrSignupResponse {
-  firstName: string
-  email: string
-  userId: string
-  lastName: string
-}
-
-export interface LoginResponse {
-  token: string
-  isAccountCompleted: boolean
-}
-
-export interface SignupResponse {
-  firstName: string
-  email: string
-}
-
-export interface AccountCompletionResponse {
-  isAccountCompleted: boolean
-}

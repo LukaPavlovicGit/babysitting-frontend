@@ -7,7 +7,7 @@ import FormField from '@/components/FormField'
 import { LoginOrSignupData, loginOrSignupSchema } from '@/schemas/auth/loginOrSignupSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { accountActions } from '@/redux/auth/account.actions'
+import { accountActions } from '@/redux/actions'
 
 function LoginOrSignupPage() {
   const dispatch = useDispatch<AppDispatch>()

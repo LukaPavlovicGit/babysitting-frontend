@@ -1,7 +1,6 @@
-import { store } from '@/redux/store/store'
-import { accountSelectors } from '@/redux/auth/account.selectors'
+import { selectors } from '@/redux/selectors'
 import { jwtDecode } from 'jwt-decode'
-import { RootReducerState } from '@/redux/store/rootReducer'
+import { useSelector } from 'react-redux'
 
 interface JwtCustomPayload {
   sub: string
@@ -29,7 +28,7 @@ export function checkTokenValidity(token = '') {
 }
 
 export const JwtDecodeAttempt = () => {
-  const token = accountSelectors.getToken(store.getState() as RootReducerState) || ''
+  const token = useSelector(selectors.getToken) || ''
   return checkTokenValidity(token) ? jwtDecode<JwtCustomPayload>(token) : null
 }
 

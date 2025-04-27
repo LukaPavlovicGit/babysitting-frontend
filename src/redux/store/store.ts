@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux'
 import { configureStore } from '@reduxjs/toolkit'
-import { accountReducer } from '../auth/account.reducers'
+import { reducer } from '../reducers'
 
 const combinedReducers = combineReducers({
-  account: accountReducer,
+  account: reducer,
 })
 
 const store = configureStore({
@@ -11,7 +11,7 @@ const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
 })
 
-export type AccountState = ReturnType<typeof accountReducer>
+export type AccountState = ReturnType<typeof reducer>
 export type AppDispatch = typeof store.dispatch
 
 export { store }

@@ -1,9 +1,9 @@
 'use client'
 
-import { useDispatch } from 'react-redux'
-import { AppDispatch, store } from '@/redux/store/store'
-import { accountSelectors } from '@/redux/auth/account.selectors'
-import { accountActions } from '@/redux/auth/account.actions'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch } from '@/redux/store/store'
+import { selectors } from '@/redux/selectors'
+import { accountActions } from '@/redux/actions'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
@@ -15,8 +15,8 @@ import Icon from '@/components/Icon'
 function LoginPage() {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
-  const email = accountSelectors.getEmail(store.getState().account)
-  const firstName = accountSelectors.getFirstName(store.getState().account)
+  const email = useSelector(selectors.getEmail)
+  const firstName = useSelector(selectors.getFirstName)
 
   const {
     register,

@@ -2,18 +2,18 @@
 
 import React, { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/redux/store/store'
 import { AccountCompletionProvider } from '@/contexts/AccountCompletionContext'
 import { createPortal } from 'react-dom'
 import AccountCompletionStepper from './AccountCompletionStepper'
+import { selectors } from '@/redux/selectors'
+import { useSelector } from 'react-redux'
 
 export default function DelayedAccountCompletionStepper() {
   const pathname = usePathname()
   const [show, setShow] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const isLoggedIn = useSelector((state: RootState) => state.account.isLoggedIn)
-  const isAccountCompleted = useSelector((state: RootState) => state.account.isAccountCompleted)
+  const isLoggedIn = useSelector(selectors.getIsLoggedIn)
+  const isAccountCompleted = useSelector(selectors.getIsAccountCompleted)
 
   useEffect(() => {
     setMounted(true)
@@ -21,7 +21,8 @@ export default function DelayedAccountCompletionStepper() {
   }, [])
 
   useEffect(() => {
-    const doNotShow = !isLoggedIn || isAccountCompleted || /^\/*(login|signup)/.test(pathname)
+    const excludedRoutes = /^\/*(login|signup)/.test(pathname)
+    const doNotShow = !isLoggedIn || isAccountCompleted || excludedRoutes
 
     if (doNotShow) {
       setShow(false)

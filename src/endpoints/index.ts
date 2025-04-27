@@ -1,11 +1,8 @@
-import { ApiConfig, Environment, FeatureFlags } from './types'
+import { ApiConfig, Environment, FeatureFlags } from '@/types'
 import { API_CONFIG } from './config'
 import { ENDPOINTS } from './endpoints'
 import { RateLimiter } from './rateLimiter'
-import { GetAccountsByCriteriaProps } from '@/hooks/useGetAccountsByCriteria'
-import { accountSelectors } from '@/redux/auth/account.selectors'
-import { store } from '@/redux/store/store'
-import { RootReducerState } from '@/redux/store/rootReducer'
+import { selectors } from '@/redux/selectors'
 import { AccountCompletionData } from '@/schemas/accountCompletionSchena'
 import { getUserIdFromJwt } from '@/utils/jwtDecoder'
 
@@ -44,7 +41,7 @@ class Api {
   }
 
   get endpoints() {
-    const jwt = accountSelectors.getToken(store.getState() as RootReducerState)
+    const jwt = selectors.getToken
 
     return {
       account: {
@@ -79,13 +76,6 @@ class Api {
           this.handleRequest(ENDPOINTS.account.getByEmail(data.email), {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
-          }),
-
-        getByCriteria: (data: GetAccountsByCriteriaProps) =>
-          this.handleRequest(ENDPOINTS.account.getByCriteria, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwt}` },
-            body: JSON.stringify(data),
           }),
 
         update: () => this.handleRequest(ENDPOINTS.account.update),

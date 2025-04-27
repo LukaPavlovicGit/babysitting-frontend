@@ -1,4 +1,4 @@
-import { Environment, ApiConfig } from './types';
+import { Environment, ApiConfig } from '@/types'
 
 export const API_CONFIG: Record<Environment, ApiConfig> = {
   development: {
@@ -27,4 +27,4 @@ export const API_CONFIG: Record<Environment, ApiConfig> = {
       enablePushNotifications: true,
     },
   },
-} as const;
+} as const

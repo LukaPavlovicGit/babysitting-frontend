@@ -25,12 +25,10 @@ import { JobLocationEnum } from '@/types/enums/JobLocationEnum'
 import { SkillsEnum } from '@/types/enums/SkillsEnum'
 import { AppDispatch } from '@/redux/store/store'
 import { useDispatch } from 'react-redux'
-import { accountActions } from '@/redux/auth/account.actions'
+import { accountActions } from '@/redux/actions'
 import { AccountCompletionData } from '@/schemas/accountCompletionSchena'
 
 export default function AccountCompletionStepper() {
-  const { currentStep } = useAccountCompletionContext()
-
   return (
     <Box className="flex flex-col flex-grow w-full gap-12 justify-between items-center bg-[#4B545C] rounded-lg p-5">
       <AccountCompletionStepperHeader />

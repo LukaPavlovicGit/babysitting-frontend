@@ -1,7 +1,7 @@
 'use client' // Ensure this is a client component
 
 import { useSelector } from 'react-redux'
-import { accountSelectors } from '../redux/auth/account.selectors'
+import { selectors } from '../redux/selectors'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import ClipLoader from 'react-spinners/ClipLoader'
@@ -11,7 +11,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const isLoggedIn = useSelector(accountSelectors.getIsLoggedIn)
+  const isLoggedIn = useSelector(selectors.getIsLoggedIn)
   const router = useRouter()
 
   useEffect(() => {
