@@ -10,7 +10,7 @@ import {
 import { LoginData, SignupData } from '@/schemas/auth'
 import { api } from '@/endpoints'
 import { LoginOrSignupData } from '@/schemas/auth/loginOrSignupSchema'
-import { AccountCompletionData } from '@/schemas/accountCompletionSchena'
+import { AccountCompletionData } from '@/schemas/accountCompletionSchema'
 
 interface LoginOrSignupRequestAction {
   type: typeof EVENT_TYPES.LOGIN_OR_SIGNUP_REQUEST

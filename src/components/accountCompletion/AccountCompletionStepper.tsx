@@ -26,7 +26,8 @@ import { SkillsEnum } from '@/types/enums/SkillsEnum'
 import { AppDispatch } from '@/redux/store/store'
 import { useDispatch } from 'react-redux'
 import { actions } from '@/redux/actions'
-import { AccountCompletionData } from '@/schemas/accountCompletionSchena'
+import { AccountCompletionData } from '@/schemas/accountCompletionSchema'
+import { getUserIdFromJwt } from '@/utils/jwtDecoder'
 
 export default function AccountCompletionStepper() {
   return (
@@ -546,7 +547,8 @@ function FamilyInformationStep() {
 function AccountCompletionStepperFooter() {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
-  const { currentStep, nextStep, prevStep, canProceed, getSteps, accountCompletionData } = useAccountCompletionContext()
+  const { currentStep, nextStep, prevStep, canProceed, getSteps, accountCompletionData, updateAccountCompletionData } =
+    useAccountCompletionContext()
 
   const {
     register,
@@ -558,6 +560,7 @@ function AccountCompletionStepperFooter() {
 
   const onSubmit = async () => {
     try {
+      updateAccountCompletionData({ createdByUserId: getUserIdFromJwt() })
       await dispatch(actions.completeAccount(accountCompletionData as AccountCompletionData))
       router.push('/home')
     } catch (error) {

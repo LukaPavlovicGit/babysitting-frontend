@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { z } from 'zod'
-import { accountCompletionSchema, AccountCompletionData } from '@/schemas/accountCompletionSchena'
+import { accountCompletionSchema, AccountCompletionData } from '@/schemas/accountCompletionSchema'
 import { RoleEnum } from '@/types/enums/RoleEnum'
 
 interface AccountCompletionContextType {

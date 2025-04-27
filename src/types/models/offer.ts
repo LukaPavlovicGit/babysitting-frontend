@@ -12,6 +12,7 @@ import {
 export interface Offer {
   id: string
   createdByRole: RoleEnum
+  createdByUserId: string
   firstName: string
   postalCode: number
   addressName: string

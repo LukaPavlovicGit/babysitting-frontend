@@ -3,7 +3,7 @@ import { API_CONFIG } from './config'
 import { ENDPOINTS } from './endpoints'
 import { RateLimiter } from './rateLimiter'
 import { selectors } from '@/redux/selectors'
-import { AccountCompletionData } from '@/schemas/accountCompletionSchena'
+import { AccountCompletionData } from '@/schemas/accountCompletionSchema'
 import { getUserIdFromJwt } from '@/utils/jwtDecoder'
 
 class Api {
