@@ -1,11 +1,7 @@
-import { State } from '@/redux/store/store'
+import { RootState } from '@/redux/store/store'
 import { createSelector } from 'reselect'
 
-interface RootState {
-  state: State
-}
-
-const getState = (state: RootState) => state.state
+const getState = (state: RootState) => state.app
 
 export const selectors = {
   getToken: createSelector([getState], (state) => state.authState.token),

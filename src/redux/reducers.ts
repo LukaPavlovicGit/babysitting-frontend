@@ -1,5 +1,4 @@
 import { AuthState, DataState, EVENT_TYPES, State } from '@/types'
-import {} from '@/types'
 import { ActionTypes } from './actions'
 
 const initialAuthState: AuthState = {
