@@ -82,6 +82,15 @@ class Api {
 
         settings: () => this.handleRequest(ENDPOINTS.account.settings),
       },
+
+      data: {
+        getData: () =>
+          this.handleRequest(ENDPOINTS.data.getData, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwt}` },
+          }),
+      },
+
       bookings: {
         list: () => this.handleRequest(ENDPOINTS.bookings.list),
         create: () => this.handleRequest(ENDPOINTS.bookings.create),

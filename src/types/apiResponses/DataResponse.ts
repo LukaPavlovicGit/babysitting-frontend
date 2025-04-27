@@ -1,4 +1,6 @@
+import { Account, Offer } from '@/types'
+
 export interface DataResponse {
-  accounts: ''
-  offers: ''
+  accounts: Account[]
+  offers: Offer[]
 }

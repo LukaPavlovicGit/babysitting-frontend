@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ParentAccountCompletionData } from '@/schemas/parentAccountCompletionSchema'
 import { parentAccountCompletionSchema } from '@/schemas/parentAccountCompletionSchema'
-import { UserTypeEnum } from '@/types/enums/UserTypeEnum'
+import { RoleEnum } from '@/types/enums/RoleEnum'
 import { LanguagesEnum } from '@/types/enums/LanguagesEnum'
 
 import Box from '@mui/material/Box'
@@ -18,14 +18,14 @@ import { RadioGroup, FormControlLabel, Radio, TextField, Checkbox } from '@mui/m
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import { useAccountCompletionContext } from '@/contexts/AccountCompletionContext'
-import { AgeCategoryEnum } from '@/types/enums/AgeCategoryEnum'
-import { CharacteristicsEnum } from '@/types/enums/CharacteristicsEnum'
+import { ChildrenAgeCategoryEnum } from '@/types/enums/ChildrenAgeCategoryEnum'
+import { ChildrenCharacteristicsEnum } from '@/types/enums/ChildrenCharacteristicsEnum'
 import { CurrencyEnum } from '@/types/enums/CurrencyEnum'
 import { JobLocationEnum } from '@/types/enums/JobLocationEnum'
 import { SkillsEnum } from '@/types/enums/SkillsEnum'
 import { AppDispatch } from '@/redux/store/store'
 import { useDispatch } from 'react-redux'
-import { accountActions } from '@/redux/actions'
+import { actions } from '@/redux/actions'
 import { AccountCompletionData } from '@/schemas/accountCompletionSchena'
 
 export default function AccountCompletionStepper() {
@@ -97,7 +97,7 @@ function UserTypeStep() {
     <div className="size-full flex flex-col gap-8 justify-center items-center">
       <div className="text-white text-6xl font-medium">Who am I?</div>
       <RadioGroup name="userType">
-        {Object.values(UserTypeEnum).map((userType) => (
+        {Object.values(RoleEnum).map((userType) => (
           <FormControlLabel
             key={userType}
             value={userType}
@@ -106,7 +106,7 @@ function UserTypeStep() {
                 icon={<CheckBoxOutlineBlankIcon />}
                 checkedIcon={<CheckBoxIcon />}
                 onChange={(e) => {
-                  const value = e.target.value as UserTypeEnum
+                  const value = e.target.value as RoleEnum
                   updateAccountCompletionData({ createdByRole: value })
                 }}
               />
@@ -464,7 +464,7 @@ function FamilyInformationStep() {
             <div>
               <RadioGroup name="childrenAgeCategories">
                 <div className="grid grid-cols-3">
-                  {Object.values(AgeCategoryEnum).map((ageCategory) => (
+                  {Object.values(ChildrenAgeCategoryEnum).map((ageCategory) => (
                     <FormControlLabel
                       key={ageCategory}
                       value={ageCategory}
@@ -475,7 +475,7 @@ function FamilyInformationStep() {
                           checked={accountCompletionData.childrenAgeCategories?.includes(ageCategory) || false}
                           onChange={(e) => {
                             const currentAgeCategories = accountCompletionData.childrenAgeCategories || []
-                            const value = e.target.value as AgeCategoryEnum
+                            const value = e.target.value as ChildrenAgeCategoryEnum
                             updateAccountCompletionData({
                               childrenAgeCategories: currentAgeCategories.includes(value)
                                 ? currentAgeCategories.filter((age) => age !== value)
@@ -497,7 +497,7 @@ function FamilyInformationStep() {
             <div>
               <RadioGroup name="familySpeakingLanguages">
                 <div className="grid grid-cols-3">
-                  {Object.values(CharacteristicsEnum).map((characteristic) => (
+                  {Object.values(ChildrenCharacteristicsEnum).map((characteristic) => (
                     <FormControlLabel
                       key={characteristic}
                       value={characteristic}
@@ -508,7 +508,7 @@ function FamilyInformationStep() {
                           checked={accountCompletionData.childrenCharacteristics?.includes(characteristic) || false}
                           onChange={(e) => {
                             const currentCharacteristics = accountCompletionData.childrenCharacteristics || []
-                            const value = e.target.value as CharacteristicsEnum
+                            const value = e.target.value as ChildrenCharacteristicsEnum
 
                             updateAccountCompletionData({
                               childrenCharacteristics: currentCharacteristics.includes(value)
@@ -558,7 +558,7 @@ function AccountCompletionStepperFooter() {
 
   const onSubmit = async () => {
     try {
-      await dispatch(accountActions.completeAccount(accountCompletionData as AccountCompletionData))
+      await dispatch(actions.completeAccount(accountCompletionData as AccountCompletionData))
       router.push('/home')
     } catch (error) {
       console.error('Failed to complete account', error)

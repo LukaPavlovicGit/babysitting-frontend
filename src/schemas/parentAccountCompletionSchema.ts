@@ -1,5 +1,5 @@
-import { AgeCategoryEnum } from '@/types/enums/AgeCategoryEnum'
-import { CharacteristicsEnum } from '@/types/enums/CharacteristicsEnum'
+import { ChildrenAgeCategoryEnum } from '@/types/enums/ChildrenAgeCategoryEnum'
+import { ChildrenCharacteristicsEnum } from '@/types/enums/ChildrenCharacteristicsEnum'
 import { CurrencyEnum } from '@/types/enums/CurrencyEnum'
 import { JobLocationEnum } from '@/types/enums/JobLocationEnum'
 import { LanguagesEnum } from '@/types/enums/LanguagesEnum'
@@ -28,10 +28,10 @@ export const parentAccountCompletionSchema = z.object({
     .max(3, { message: 'At most 3 family speaking languages can be picked' }),
   numberOfChildren: z.number().min(1, { message: 'At least one child must be picked' }),
   childrenAgeCategories: z
-    .array(z.nativeEnum(AgeCategoryEnum))
+    .array(z.nativeEnum(ChildrenAgeCategoryEnum))
     .min(1, { message: 'At least one age category must be picked' }),
   childrenCharacteristics: z
-    .array(z.nativeEnum(CharacteristicsEnum))
+    .array(z.nativeEnum(ChildrenCharacteristicsEnum))
     .min(1, { message: 'At least one child characteristic must be picked' })
     .max(4, { message: 'At most 4 child characteristics can be picked' }),
   familyDescription: z.string().min(20, { message: 'Family description must be picked' }),

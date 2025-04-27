@@ -1,15 +1,15 @@
-import { AgeCategoryEnum } from '@/types/enums/AgeCategoryEnum'
-import { CharacteristicsEnum } from '@/types/enums/CharacteristicsEnum'
+import { ChildrenAgeCategoryEnum } from '@/types/enums/ChildrenAgeCategoryEnum'
+import { ChildrenCharacteristicsEnum } from '@/types/enums/ChildrenCharacteristicsEnum'
 import { CurrencyEnum } from '@/types/enums/CurrencyEnum'
 import { JobLocationEnum } from '@/types/enums/JobLocationEnum'
 import { LanguagesEnum } from '@/types/enums/LanguagesEnum'
 import { SkillsEnum } from '@/types/enums/SkillsEnum'
-import { UserTypeEnum } from '@/types/enums/UserTypeEnum'
+import { RoleEnum } from '@/types/enums/RoleEnum'
 import { z } from 'zod'
 
 export const accountCompletionSchema = z.object({
   // first step
-  createdByRole: z.nativeEnum(UserTypeEnum, { message: 'User type must be picked' }).default(UserTypeEnum.PARENT),
+  createdByRole: z.nativeEnum(RoleEnum, { message: 'User type must be picked' }).default(RoleEnum.PARENT),
   createdByUserId: z.string().min(1).default('read_user_id_from_jwt'),
   // second step
   postalCode: z.number().min(1, { message: 'Postal code must be a number' }),
@@ -67,10 +67,10 @@ export const accountCompletionSchema = z.object({
   // fourth step
   numberOfChildren: z.number().min(1, { message: 'At least one child must be picked' }).default(0),
   childrenAgeCategories: z
-    .array(z.nativeEnum(AgeCategoryEnum))
+    .array(z.nativeEnum(ChildrenAgeCategoryEnum))
     .min(1, { message: 'At least one age category must be picked' }),
   childrenCharacteristics: z
-    .array(z.nativeEnum(CharacteristicsEnum))
+    .array(z.nativeEnum(ChildrenCharacteristicsEnum))
     .min(1, { message: 'At least one child characteristic must be picked' })
     .max(4, { message: 'At most 4 child characteristics can be picked' }),
   familyDescription: z.string().min(20, { message: 'Family description must be picked' }),

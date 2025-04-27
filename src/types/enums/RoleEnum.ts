@@ -1,4 +1,4 @@
-export enum UserTypeEnum {
+export enum RoleEnum {
   PARENT = 'PARENT',
   BABYSITTER = 'BABYSITTER',
 }

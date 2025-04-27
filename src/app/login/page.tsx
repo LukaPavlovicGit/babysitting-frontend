@@ -3,7 +3,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch } from '@/redux/store/store'
 import { selectors } from '@/redux/selectors'
-import { accountActions } from '@/redux/actions'
+import { actions } from '@/redux/actions'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
@@ -28,7 +28,7 @@ function LoginPage() {
 
   const onSubmit = handleSubmit(async (data: LoginData) => {
     try {
-      await dispatch(accountActions.login(data))
+      await dispatch(actions.login(data))
       router.push('/')
     } catch (error) {
       console.error('Login failed:', error)

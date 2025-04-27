@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FormField from '@/components/FormField'
 import Icon from '@/components/Icon'
-import { accountActions } from '@/redux/actions'
+import { actions } from '@/redux/actions'
 
 function SignupPage() {
   const dispatch = useDispatch<AppDispatch>()
@@ -24,7 +24,7 @@ function SignupPage() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await dispatch(accountActions.signup(data))
+      await dispatch(actions.signup(data))
       router.push('/login')
     } catch (error) {}
   })

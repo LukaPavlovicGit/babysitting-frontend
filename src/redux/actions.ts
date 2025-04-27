@@ -1,5 +1,12 @@
 import { Dispatch } from 'redux'
-import { EVENT_TYPES, AccountCompletionResponse, LoginOrSignupResponse, LoginResponse, SignupResponse } from '@/types'
+import {
+  EVENT_TYPES,
+  AccountCompletionResponse,
+  LoginOrSignupResponse,
+  LoginResponse,
+  SignupResponse,
+  DataResponse,
+} from '@/types'
 import { LoginData, SignupData } from '@/schemas/auth'
 import { api } from '@/endpoints'
 import { LoginOrSignupData } from '@/schemas/auth/loginOrSignupSchema'
@@ -62,12 +69,18 @@ interface AccountCompletionFailureAction {
 }
 
 interface DataRequestAction {
-  type: typeof EVENT_TYPES.ACCOUNT_COMPLETION_REQUEST
+  type: typeof EVENT_TYPES.DATA_REQUEST
 }
 
-interface DataSuccessAction {}
+interface DataSuccessAction {
+  type: typeof EVENT_TYPES.DATA_SUCCESS
+  payload: DataResponse
+}
 
-interface DataFailureAction {}
+interface DataFailureAction {
+  type: typeof EVENT_TYPES.DATA_FAILURE
+  payload: string
+}
 
 export type ActionTypes =
   | LoginOrSignupRequestAction
@@ -82,8 +95,11 @@ export type ActionTypes =
   | AccountCompletionRequestAction
   | AccountCompletionSuccessAction
   | AccountCompletionFailureAction
+  | DataRequestAction
+  | DataSuccessAction
+  | DataFailureAction
 
-export const accountActions = {
+export const actions = {
   loginOrSignupRequest: (): LoginOrSignupRequestAction => ({
     type: EVENT_TYPES.LOGIN_OR_SIGNUP_REQUEST,
   }),
@@ -140,17 +156,29 @@ export const accountActions = {
     payload: error,
   }),
 
-  // dataRequest: ():
+  dataRequest: (): DataRequestAction => ({
+    type: EVENT_TYPES.DATA_REQUEST,
+  }),
+
+  dataSuccess: (data: DataResponse): DataSuccessAction => ({
+    type: EVENT_TYPES.DATA_SUCCESS,
+    payload: data,
+  }),
+
+  dataFailure: (error: string): DataFailureAction => ({
+    type: EVENT_TYPES.DATA_FAILURE,
+    payload: error,
+  }),
 
   loginOrSignup: (loginOrSignupData: LoginOrSignupData) => {
     return async (dispatch: Dispatch<ActionTypes>) => {
       try {
-        dispatch(accountActions.loginOrSignupRequest())
+        dispatch(actions.loginOrSignupRequest())
         const response = await api.endpoints.account.getByEmail(loginOrSignupData)
 
         if (response.status === 200) {
           const data = (await response.json()) as LoginOrSignupResponse
-          dispatch(accountActions.loginOrSignupSuccess(data))
+          dispatch(actions.loginOrSignupSuccess(data))
           return data
         } else if (response.status === 404) {
           throw new Error('User not found')
@@ -159,7 +187,7 @@ export const accountActions = {
         }
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Login or signup failed'
-        dispatch(accountActions.loginOrSignupFailure(errorMessage))
+        dispatch(actions.loginOrSignupFailure(errorMessage))
         throw error
       }
     }
@@ -168,12 +196,12 @@ export const accountActions = {
   login: (loginData: LoginData) => {
     return async (dispatch: Dispatch<ActionTypes>) => {
       try {
-        dispatch(accountActions.loginRequest())
+        dispatch(actions.loginRequest())
         const response = await api.endpoints.account.login(loginData)
 
         if (response.status === 200) {
           const data = (await response.json()) as LoginResponse
-          dispatch(accountActions.loginSuccess(data))
+          dispatch(actions.loginSuccess(data))
           return data
         } else if (response.status === 404) {
           throw new Error('User not found')
@@ -182,7 +210,7 @@ export const accountActions = {
         }
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Login failed'
-        dispatch(accountActions.loginFailure(errorMessage))
+        dispatch(actions.loginFailure(errorMessage))
         throw error
       }
     }
@@ -191,12 +219,12 @@ export const accountActions = {
   signup: (signupData: SignupData) => {
     return async (dispatch: Dispatch<ActionTypes>) => {
       try {
-        dispatch(accountActions.signupRequest())
+        dispatch(actions.signupRequest())
         const response = await api.endpoints.account.signup(signupData)
 
         if (response.status === 200) {
           const data = (await response.json()) as SignupResponse
-          dispatch(accountActions.signupSuccess(data))
+          dispatch(actions.signupSuccess(data))
           return data
         } else if (response.status === 409) {
           throw new Error('User already exists')
@@ -205,7 +233,7 @@ export const accountActions = {
         }
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Registration failed'
-        dispatch(accountActions.signupFailure(errorMessage))
+        dispatch(actions.signupFailure(errorMessage))
         throw error
       }
     }
@@ -214,17 +242,17 @@ export const accountActions = {
   completeAccount: (accountCompletionData: AccountCompletionData) => {
     return async (dispatch: Dispatch<ActionTypes>) => {
       try {
-        dispatch(accountActions.accountCompletionRequest())
+        dispatch(actions.accountCompletionRequest())
         const response = await api.endpoints.account.completeAccount(accountCompletionData)
 
         if (!response.ok) throw new Error('Failed to complete account')
 
         const data = (await response.json()) as AccountCompletionResponse
-        dispatch(accountActions.accountCompletionSuccess(data))
+        dispatch(actions.accountCompletionSuccess(data))
         return data
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to complete account'
-        dispatch(accountActions.accountCompletionFailure(errorMessage))
+        dispatch(actions.accountCompletionFailure(errorMessage))
         throw error
       }
     }
@@ -233,7 +261,21 @@ export const accountActions = {
   getData: () => {
     return async (dispatch: Dispatch<ActionTypes>) => {
       try {
-      } catch (error) {}
+        dispatch(actions.dataRequest())
+        const response = await api.endpoints.data.getData()
+
+        if (response.status === 200) {
+          const data = (await response.json()) as DataResponse
+          dispatch(actions.dataSuccess(data))
+          return data
+        } else {
+          throw new Error('Failed to fetch data')
+        }
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to complete account'
+        dispatch(actions.dataFailure(errorMessage))
+        throw error
+      }
     }
   },
 }

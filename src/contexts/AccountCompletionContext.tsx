@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { z } from 'zod'
 import { accountCompletionSchema, AccountCompletionData } from '@/schemas/accountCompletionSchena'
-import { UserTypeEnum } from '@/types/enums/UserTypeEnum'
+import { RoleEnum } from '@/types/enums/RoleEnum'
 
 interface AccountCompletionContextType {
   currentStep: number
@@ -27,7 +27,7 @@ export const useAccountCompletionContext = () => {
 }
 
 const stepsConfig = {
-  [UserTypeEnum.PARENT]: {
+  [RoleEnum.PARENT]: {
     stepsTitles: ['Who am I?', 'Personal Information', 'Schedule & Needs', 'Family Information'],
     schemas: [
       accountCompletionSchema.pick({ createdByRole: true }),
@@ -54,7 +54,7 @@ const stepsConfig = {
       }),
     ],
   },
-  [UserTypeEnum.BABYSITTER]: {
+  [RoleEnum.BABYSITTER]: {
     stepsTitles: ['Who am I?', 'Personal Information', 'Schedule & Skills'],
     schemas: [
       accountCompletionSchema.pick({ createdByRole: true }),
@@ -80,7 +80,7 @@ const stepsConfig = {
 export function AccountCompletionProvider({ children }: { children: React.ReactNode }) {
   const [currentStep, setCurrentStep] = useState(0)
   const [accountCompletionData, setAccountCompletionData] = useState<Partial<AccountCompletionData>>({
-    createdByRole: UserTypeEnum.PARENT,
+    createdByRole: RoleEnum.PARENT,
   })
   const [errors, setErrors] = useState<z.ZodError | null>(null)
   const [canProceed, setCanProceed] = useState(false)
@@ -139,8 +139,8 @@ export function AccountCompletionProvider({ children }: { children: React.ReactN
     nextStep,
     prevStep,
     getSteps,
-    isParent: accountCompletionData.createdByRole === UserTypeEnum.PARENT,
-    isBabysitter: accountCompletionData.createdByRole === UserTypeEnum.BABYSITTER,
+    isParent: accountCompletionData.createdByRole === RoleEnum.PARENT,
+    isBabysitter: accountCompletionData.createdByRole === RoleEnum.BABYSITTER,
     canProceed,
     errors,
   }

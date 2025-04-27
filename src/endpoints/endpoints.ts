@@ -11,6 +11,10 @@ export const ENDPOINTS = {
     update: '/account/update',
     settings: '/account/settings',
   },
+  data: {
+    getData: '/get-data',
+  },
+
   bookings: {
     list: '/bookings',
     create: '/bookings/create',

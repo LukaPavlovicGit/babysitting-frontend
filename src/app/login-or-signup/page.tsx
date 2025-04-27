@@ -7,7 +7,7 @@ import FormField from '@/components/FormField'
 import { LoginOrSignupData, loginOrSignupSchema } from '@/schemas/auth/loginOrSignupSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { accountActions } from '@/redux/actions'
+import { actions } from '@/redux/actions'
 
 function LoginOrSignupPage() {
   const dispatch = useDispatch<AppDispatch>()
@@ -22,7 +22,7 @@ function LoginOrSignupPage() {
 
   const onSubmit = handleSubmit(async (data: LoginOrSignupData) => {
     try {
-      await dispatch(accountActions.loginOrSignup(data))
+      await dispatch(actions.loginOrSignup(data))
       router.push('/login')
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Login or signup failed'
