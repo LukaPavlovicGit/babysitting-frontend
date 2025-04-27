@@ -1,16 +1,18 @@
-import { AccountState } from '@/redux/store/store'
+import { State } from '@/redux/store/store'
 import { createSelector } from 'reselect'
 
 interface RootState {
-  account: AccountState
+  state: State
 }
 
-const getAccountState = (state: RootState) => state.account
+const getState = (state: RootState) => state.state
 
 export const selectors = {
-  getToken: createSelector([getAccountState], (account) => account.token),
-  getIsLoggedIn: createSelector([getAccountState], (account) => account.isLoggedIn),
-  getIsAccountCompleted: createSelector([getAccountState], (account) => account.isAccountCompleted),
-  getFirstName: createSelector([getAccountState], (account) => account.firstName),
-  getEmail: createSelector([getAccountState], (account) => account.email),
+  getToken: createSelector([getState], (state) => state.authState.token),
+  getIsLoggedIn: createSelector([getState], (state) => state.authState.isLoggedIn),
+  getIsAccountCompleted: createSelector([getState], (state) => state.authState.isAccountCompleted),
+  getFirstName: createSelector([getState], (state) => state.authState.firstName),
+  getEmail: createSelector([getState], (state) => state.authState.email),
+  getAccounts: createSelector([getState], (state) => state.dataState.accounts),
+  getOffers: createSelector([getState], (state) => state.dataState.offers),
 }
