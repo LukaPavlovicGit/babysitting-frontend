@@ -22,7 +22,7 @@ export default function DelayedAccountCompletionStepper() {
 
   useEffect(() => {
     const excludedRoutes = /^\/*(login|signup)/.test(pathname)
-    const doNotShow = !isLoggedIn || isAccountCompleted || excludedRoutes
+    const doNotShow = excludedRoutes || (isLoggedIn && isAccountCompleted)
 
     if (doNotShow) {
       setShow(false)
@@ -67,9 +67,9 @@ export default function DelayedAccountCompletionStepper() {
   if (!mounted || !show) return null
 
   return createPortal(
-    <div className="flex items-top justify-center fixed inset-0 z-50 bg-black bg-opacity-50 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <div className="flex items-top justify-center fixed inset-0 z-[9999] bg-black bg-opacity-50 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       <div className="flex flex-col items-end gap-2 p-10 w-full max-w-7xl">
-        <button onClick={handleDismiss} className="text-gray-500 hover:text-gray-700">
+        <button onClick={handleDismiss} className="text-white font-medium text-2xl hover:text-gray-700">
           <span>SKIP</span>
         </button>
         <AccountCompletionProvider>

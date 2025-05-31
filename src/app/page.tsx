@@ -1,10 +1,66 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@/redux/store/store'
+import { useRouter } from 'next/navigation'
+import FormField from '@/components/FormField'
+import { LoginOrSignupData, loginOrSignupSchema } from '@/schemas/auth/loginOrSignupSchema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { actions } from '@/redux/actions'
+
+function LoginOrSignupPage() {
+  const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginOrSignupData>({
+    resolver: zodResolver(loginOrSignupSchema),
+  })
+
+  const onSubmit = handleSubmit(async (data: LoginOrSignupData) => {
+    try {
+      await dispatch(actions.loginOrSignup(data))
+      router.push('/login')
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Login or signup failed'
+      if (errorMessage === 'User not found') {
+        router.push('/signup')
+      } else {
+        console.error(errorMessage)
+      }
+    }
+  })
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-      </main>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <div className="flex flex-col items-center justify-center border-[1px] border-white p-4 w-full sm:w-1/2 sm:max-w-md gap-6">
+        <h1 className="text-2xl font-bold">Welcome</h1>
+        <form onSubmit={onSubmit} className="flex flex-col size-full gap-3">
+          <p className="text-sm text-gray-500">Log in or sign up</p>
+          <FormField
+            type="text"
+            placeholder="Email"
+            name="email"
+            register={register}
+            error={errors.email}
+            className="px-2 py-1 text-black "
+          />
+          <button className="bg-yellow-500 text-black px-2 py-1">Continue</button>
+        </form>
+        <div className="flex items-center justify-center w-full">
+          <p className="text-sm text-gray-500 ">or continue with</p>
+        </div>
+        <div className="flex items-center justify-center w-full gap-3">
+          <button className="bg-white text-black p-2">Apple</button>
+          <button className="bg-white text-black p-2">Facebook</button>
+          <button className="bg-white text-black p-2">Google</button>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
+
+export default LoginOrSignupPage

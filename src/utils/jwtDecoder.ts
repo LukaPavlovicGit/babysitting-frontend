@@ -1,6 +1,4 @@
-import { selectors } from '@/redux/selectors'
 import { jwtDecode } from 'jwt-decode'
-import { useSelector } from 'react-redux'
 
 interface JwtCustomPayload {
   sub: string
@@ -9,10 +7,10 @@ interface JwtCustomPayload {
   exp: number
 }
 
-export function checkTokenValidity(token = '') {
-  if (token && token.trim() !== '') {
+export function checkTokenValidity(jwt = '') {
+  if (jwt && jwt.trim() !== '') {
     try {
-      const decoded = jwtDecode<JwtCustomPayload>(token)
+      const decoded = jwtDecode<JwtCustomPayload>(jwt)
       if (!decoded?.exp) {
         return false
       }
@@ -28,8 +26,8 @@ export function checkTokenValidity(token = '') {
 }
 
 export const JwtDecodeAttempt = () => {
-  const token = useSelector(selectors.getToken) || ''
-  return checkTokenValidity(token) ? jwtDecode<JwtCustomPayload>(token) : null
+  const jwt = localStorage.getItem('jwt') || ''
+  return checkTokenValidity(jwt) ? jwtDecode<JwtCustomPayload>(jwt) : null
 }
 
 export const getUserIdFromJwt = () => {

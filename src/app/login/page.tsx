@@ -29,7 +29,7 @@ function LoginPage() {
   const onSubmit = handleSubmit(async (data: LoginData) => {
     try {
       await dispatch(actions.login(data))
-      router.push('/')
+      router.push('/home')
     } catch (error) {
       console.error('Login failed:', error)
     }

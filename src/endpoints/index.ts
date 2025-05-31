@@ -2,7 +2,6 @@ import { ApiConfig, Environment, FeatureFlags } from '@/types'
 import { API_CONFIG } from './config'
 import { ENDPOINTS } from './endpoints'
 import { RateLimiter } from './rateLimiter'
-import { selectors } from '@/redux/selectors'
 import { AccountCompletionData } from '@/schemas/accountCompletionSchema'
 import { getUserIdFromJwt } from '@/utils/jwtDecoder'
 
@@ -41,7 +40,7 @@ class Api {
   }
 
   get endpoints() {
-    const jwt = selectors.getToken
+    const jwt = localStorage.getItem('jwt')
 
     return {
       account: {

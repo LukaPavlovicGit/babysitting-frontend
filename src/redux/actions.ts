@@ -202,6 +202,7 @@ export const actions = {
         if (response.status === 200) {
           const data = (await response.json()) as LoginResponse
           dispatch(actions.loginSuccess(data))
+          localStorage.setItem('jwt', data.token)
           return data
         } else if (response.status === 404) {
           throw new Error('User not found')

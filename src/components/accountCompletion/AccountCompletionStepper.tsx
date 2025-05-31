@@ -547,8 +547,7 @@ function FamilyInformationStep() {
 function AccountCompletionStepperFooter() {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
-  const { currentStep, nextStep, prevStep, canProceed, getSteps, accountCompletionData, updateAccountCompletionData } =
-    useAccountCompletionContext()
+  const { currentStep, nextStep, prevStep, canProceed, getSteps, accountCompletionData } = useAccountCompletionContext()
 
   const {
     register,
@@ -560,7 +559,6 @@ function AccountCompletionStepperFooter() {
 
   const onSubmit = async () => {
     try {
-      updateAccountCompletionData({ createdByUserId: getUserIdFromJwt() })
       await dispatch(actions.completeAccount(accountCompletionData as AccountCompletionData))
       router.push('/home')
     } catch (error) {
