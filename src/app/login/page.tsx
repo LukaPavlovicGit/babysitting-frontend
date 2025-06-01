@@ -24,6 +24,9 @@ function LoginPage() {
     formState: { errors },
   } = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: email || '',
+    },
   })
 
   const onSubmit = handleSubmit(async (data: LoginData) => {
@@ -52,7 +55,6 @@ function LoginPage() {
             register={register}
             error={errors.email}
             className="w-full px-2 py-1 text-black "
-            value={email || ''}
           />
           <FormField
             type="password"

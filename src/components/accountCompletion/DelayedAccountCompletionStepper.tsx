@@ -21,8 +21,7 @@ export default function DelayedAccountCompletionStepper() {
   }, [])
 
   useEffect(() => {
-    const excludedRoutes = /^\/*(login|signup)/.test(pathname)
-    const doNotShow = excludedRoutes || (isLoggedIn && isAccountCompleted)
+    const doNotShow = !isLoggedIn || (isLoggedIn && isAccountCompleted)
 
     if (doNotShow) {
       setShow(false)
