@@ -7,6 +7,8 @@ const initialState: AuthState = {
   firstName: null,
   email: null,
   isAccountCompleted: false,
+  longitude: null,
+  latitude: null,
   isLoggedIn: false,
 }
 
@@ -44,6 +46,8 @@ export const accountReducer = (state: AuthState = initialState, action: ActionTy
         ...state,
         token: action.payload.token,
         isAccountCompleted: action.payload.isAccountCompleted,
+        longitude: action.payload.longitude,
+        latitude: action.payload.latitude,
         isLoggedIn: true,
       }
     case EVENT_TYPES.SIGNUP_SUCCESS:

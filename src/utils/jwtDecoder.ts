@@ -39,8 +39,3 @@ export const getUserTypeFromJwt = () => {
   const decoded = JwtDecodeAttempt()
   return decoded?.role
 }
-
-export const getUserEmailFromJwt = () => {
-  const decoded = JwtDecodeAttempt()
-  return decoded?.email
-}

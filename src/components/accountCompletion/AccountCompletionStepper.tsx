@@ -27,7 +27,6 @@ import { AppDispatch } from '@/redux/store/store'
 import { useDispatch } from 'react-redux'
 import { actions } from '@/redux/actions'
 import { AccountCompletionData } from '@/schemas/accountCompletionSchema'
-import { getUserIdFromJwt } from '@/utils/jwtDecoder'
 
 export default function AccountCompletionStepper() {
   return (
@@ -560,6 +559,7 @@ function AccountCompletionStepperFooter() {
   const onSubmit = async () => {
     try {
       await dispatch(actions.completeAccount(accountCompletionData as AccountCompletionData))
+      await dispatch(actions.getData())
       router.push('/home')
     } catch (error) {
       console.error('Failed to complete account', error)

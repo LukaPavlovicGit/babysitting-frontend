@@ -6,6 +6,8 @@ const initialAuthState: AuthState = {
   firstName: null,
   email: null,
   isAccountCompleted: false,
+  longitude: null,
+  latitude: null,
   isLoggedIn: false,
 }
 
@@ -44,6 +46,8 @@ export const reducer = (state: State = InitialState, action: ActionTypes): State
           ...state.authState,
           token: action.payload.token,
           isAccountCompleted: action.payload.isAccountCompleted,
+          longitude: action.payload.longitude,
+          latitude: action.payload.latitude,
           isLoggedIn: true,
         },
       }
