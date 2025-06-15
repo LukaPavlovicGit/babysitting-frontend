@@ -45,6 +45,7 @@ export const reducer = (state: State = InitialState, action: ActionTypes): State
         authState: {
           ...state.authState,
           token: action.payload.token,
+          email: action.payload.email,
           isAccountCompleted: action.payload.isAccountCompleted,
           longitude: action.payload.longitude,
           latitude: action.payload.latitude,

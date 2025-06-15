@@ -3,4 +3,5 @@ export interface LoginResponse {
   isAccountCompleted: boolean
   longitude: number | null
   latitude: number | null
+  email: string
 }
