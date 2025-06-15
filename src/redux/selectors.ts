@@ -11,4 +11,6 @@ export const selectors = {
   getEmail: createSelector([getState], (state) => state.authState.email),
   getAccounts: createSelector([getState], (state) => state.dataState.accounts),
   getOffers: createSelector([getState], (state) => state.dataState.offers),
+  getLongitude: createSelector([getState], (state) => state.authState.longitude),
+  getLatitude: createSelector([getState], (state) => state.authState.latitude),
 }
