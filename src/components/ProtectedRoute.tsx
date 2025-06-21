@@ -16,7 +16,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      router.push('/login-or-signup')
+      router.push('/')
     }
   }, [isLoggedIn, router])
 

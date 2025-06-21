@@ -6,8 +6,7 @@ const initialAuthState: AuthState = {
   firstName: null,
   email: null,
   isAccountCompleted: false,
-  longitude: null,
-  latitude: null,
+  userId: '',
   isLoggedIn: false,
 }
 
@@ -47,8 +46,7 @@ export const reducer = (state: State = InitialState, action: ActionTypes): State
           token: action.payload.token,
           email: action.payload.email,
           isAccountCompleted: action.payload.isAccountCompleted,
-          longitude: action.payload.longitude,
-          latitude: action.payload.latitude,
+          userId: action.payload.userId,
           isLoggedIn: true,
         },
       }
@@ -65,7 +63,14 @@ export const reducer = (state: State = InitialState, action: ActionTypes): State
     case EVENT_TYPES.DATA_FAILURE:
       return { ...state, dataState: InitialDataState }
     case EVENT_TYPES.DATA_SUCCESS:
-      return { ...state, dataState: { ...state.dataState, ...action.payload } }
+      return {
+        ...state,
+        dataState: {
+          ...state.dataState,
+          accounts: action.payload.accounts,
+          offers: action.payload.offers,
+        },
+      }
 
     default:
       return state

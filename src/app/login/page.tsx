@@ -32,6 +32,7 @@ function LoginPage() {
   const onSubmit = handleSubmit(async (data: LoginData) => {
     try {
       await dispatch(actions.login(data))
+      await dispatch(actions.getData())
       router.push('/home')
     } catch (error) {
       console.error('Login failed:', error)
@@ -42,7 +43,7 @@ function LoginPage() {
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="flex flex-col items-center justify-center border-[1px] border-white p-4 w-full sm:w-1/2 sm:max-w-md gap-6">
         <div className="relative flex flex-row items-center justify-between gap-3 w-full">
-          <Link href="/login-or-signup" className="bg-white text-black p-2">
+          <Link href="/" className="bg-white text-black p-2">
             <Icon name="LeftArrowSvg" />
           </Link>
           <h2 className="absolute text-2xl font-bold left-1/2 -translate-x-1/2">Welcome, {firstName}</h2>

@@ -559,7 +559,6 @@ function AccountCompletionStepperFooter() {
   const onSubmit = async () => {
     try {
       await dispatch(actions.completeAccount(accountCompletionData as AccountCompletionData))
-      await dispatch(actions.getData())
       router.push('/home')
     } catch (error) {
       console.error('Failed to complete account', error)

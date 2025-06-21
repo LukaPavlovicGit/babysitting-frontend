@@ -1,19 +1,19 @@
 'use client'
 
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from 'react-leaflet'
-import L, { LatLngTuple } from 'leaflet'
+import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 import 'leaflet-defaulticon-compatibility'
 import { useSelector } from 'react-redux'
 import { selectors } from '@/redux/selectors'
-import { RoleEnum } from '@/types'
+import { Offer, RoleEnum } from '@/types'
 
-const createMarkerIcon = (type: string) => {
-  const iconMap = {
-    parent: '👤',
-    babysitter: '🧑‍🍼',
-    me: '📍',
+const createMarkerIcon = (type: RoleEnum | 'ME') => {
+  const iconMap: Record<RoleEnum | 'ME', string> = {
+    [RoleEnum.PARENT]: '👤',
+    [RoleEnum.BABYSITTER]: '🧑‍🍼',
+    ME: '📍',
   }
 
   return L.divIcon({
@@ -23,8 +23,6 @@ const createMarkerIcon = (type: string) => {
     className: 'custom-div-icon',
   })
 }
-
-const center: LatLngTuple = [43.898356, 20.352036]
 
 export type MapConfig = {
   center: [number, number] | [43.898356, 20.352036]
@@ -44,12 +42,11 @@ export default function Map() {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     markers: [],
-    myMarker: [43.898356, 20.352036],
+    myMarker: [43.89835, 20.35204],
   }
 
-  const offers = useSelector(selectors.getOffers)
-  const longitude = useSelector(selectors.getLongitude)
-  const latitude = useSelector(selectors.getLatitude)
+  const offers: Offer[] = useSelector(selectors.getOffers)
+  const currentUserId = useSelector(selectors.getUserId)
 
   return (
     <MapContainer
@@ -59,34 +56,47 @@ export default function Map() {
       scrollWheelZoom={config.scrollWheelZoom}
     >
       <TileLayer attribution={config.attribution} url={config.url} />
-      {offers.map((offer) => (
-        <Marker
-          key={offer.id}
-          position={[offer.addressLatitude, offer.addressLongitude]}
-          icon={createMarkerIcon(offer.createdByRole)}
-        >
-          <Popup>
-            <div>
-              <strong>{offer.createdByRole === RoleEnum.PARENT ? '👨‍👩 Parent' : '👩‍🏫 Babysitter'}</strong>
-              <br />
-              <strong>{offer.firstName}</strong>
-              <br />
-              {offer.addressName}
-              <br />
-              Rate: ${offer.rate}/hour
-            </div>
-          </Popup>
-        </Marker>
-      ))}
-      {latitude && longitude && (
-        <Marker position={[latitude, longitude]} icon={createMarkerIcon('me')}>
-          <Popup>
-            <div>
-              <strong>You</strong>
-            </div>
-          </Popup>
-        </Marker>
-      )}
+      {offers.map((offer) => {
+        const isMyOffer = offer.createdByUserId === currentUserId
+
+        if (isMyOffer) {
+          return (
+            <Marker
+              key={offer.id}
+              position={[offer.addressLongitude, offer.addressLatitude]}
+              icon={createMarkerIcon('ME')}
+            >
+              <Popup>
+                <div>
+                  <strong>You</strong>
+                </div>
+              </Popup>
+            </Marker>
+          )
+        } else {
+          return (
+            <Marker
+              key={offer.id}
+              position={[offer.addressLongitude, offer.addressLatitude]}
+              icon={
+                offer.createdByRole === 1 ? createMarkerIcon(RoleEnum.PARENT) : createMarkerIcon(RoleEnum.BABYSITTER)
+              }
+            >
+              <Popup>
+                <div>
+                  <strong>{offer.createdByRole === 1 ? '👨‍👩‍👧‍👦 Parent' : '👶 Babysitter'}</strong>
+                  <br />
+                  <strong>{offer.firstName}</strong>
+                  <br />
+                  {offer.addressName}
+                  <br />
+                  Rate: ${offer.rate}/hour
+                </div>
+              </Popup>
+            </Marker>
+          )
+        }
+      })}
     </MapContainer>
   )
 }

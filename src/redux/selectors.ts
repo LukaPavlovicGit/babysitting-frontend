@@ -8,9 +8,13 @@ export const selectors = {
   getIsLoggedIn: createSelector([getState], (state) => state.authState.isLoggedIn),
   getIsAccountCompleted: createSelector([getState], (state) => state.authState.isAccountCompleted),
   getFirstName: createSelector([getState], (state) => state.authState.firstName),
+  getUserId: createSelector([getState], (state) => state.authState.userId),
   getEmail: createSelector([getState], (state) => state.authState.email),
   getAccounts: createSelector([getState], (state) => state.dataState.accounts),
-  getOffers: createSelector([getState], (state) => state.dataState.offers),
-  getLongitude: createSelector([getState], (state) => state.authState.longitude),
-  getLatitude: createSelector([getState], (state) => state.authState.latitude),
+  getOffers: createSelector([getState], (state) => {
+    const result = state.dataState.offers
+    console.log('SELECTOR - returning:', result)
+    console.log('SELECTOR - isArray:', Array.isArray(result))
+    return result
+  }),
 }

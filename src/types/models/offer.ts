@@ -1,5 +1,4 @@
 import {
-  RoleEnum,
   LanguagesEnum,
   CurrencyEnum,
   JobLocationEnum,
@@ -11,7 +10,7 @@ import {
 
 export interface Offer {
   id: string
-  createdByRole: RoleEnum
+  createdByRole: number
   createdByUserId: string
   firstName: string
   postalCode: number
