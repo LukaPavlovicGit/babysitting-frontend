@@ -30,19 +30,14 @@ export type MapConfig = {
   scrollWheelZoom: boolean | false
   attribution: string
   url: string
-  myMarker: [number, number]
-  markers: [number, number][]
 }
-
 export default function Map() {
   const config: MapConfig = {
-    center: [43.898356, 20.352036],
+    center: [44.81571, 20.459424],
     zoom: 13,
     scrollWheelZoom: false,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    markers: [],
-    myMarker: [43.89835, 20.35204],
   }
 
   const offers: Offer[] = useSelector(selectors.getOffers)
